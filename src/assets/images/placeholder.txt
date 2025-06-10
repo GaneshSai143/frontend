@@ -1,0 +1,6 @@
+This directory contains the following images:
+- school1.jpg
+- school2.jpg
+- school3.jpg
+
+Please add appropriate school images to this directory. 
