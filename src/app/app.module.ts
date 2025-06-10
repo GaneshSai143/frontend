@@ -6,9 +6,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { ErrorHandlerService } from './core/services/error-handler.service';
-import { AppRoutingModule } from './app-routing.module';
+
+// Feature Modules
+import { AuthModule } from './features/auth/auth.module';
+import { DashboardModule } from './features/dashboard/dashboard.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,9 @@ import { AppRoutingModule } from './app-routing.module';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AuthModule,
+    DashboardModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
