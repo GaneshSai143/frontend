@@ -6,25 +6,25 @@
     </div>
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" href="#">
+        <a class="nav-link active" routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
           <i class="bi bi-speedometer2"></i>
           Dashboard
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" (click)="navigateToSchools()" routerLinkActive="active">
           <i class="bi bi-building"></i>
           Schools
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" (click)="navigateToAdmins()" routerLinkActive="active">
           <i class="bi bi-person-badge"></i>
           Admins
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" (click)="navigateToSettings()" routerLinkActive="active">
           <i class="bi bi-gear"></i>
           Settings
         </a>
@@ -40,20 +40,20 @@
         <button class="btn btn-link" id="sidebarToggle">
           <i class="bi bi-list"></i>
         </button>
-        <div class="ms-auto d-flex align-items-center">
+        <!-- <div class="ms-auto d-flex align-items-center"> -->
           <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="bi bi-person-circle"></i>
               <span class="ms-2">Super Admin</span>
             </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" routerLink="/profile"><i class="bi bi-person"></i> Profile</a></li>
+              <li><a class="dropdown-item" (click)="navigateToSettings()"><i class="bi bi-gear"></i> Settings</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#" (click)="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+              <li><a class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
             </ul>
           </div>
-        </div>
+        <!-- </div> -->
       </div>
     </nav>
 
@@ -112,7 +112,7 @@
           </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Recent Activity and Quick Actions -->
         <div class="row">
           <div class="col-md-8">
             <div class="card">
@@ -162,16 +162,16 @@
               </div>
               <div class="card-body">
                 <div class="d-grid gap-2">
-                  <button class="btn btn-primary">
+                  <button class="btn btn-primary" (click)="addNewSchool()">
                     <i class="bi bi-plus-circle"></i> Add New School
                   </button>
-                  <button class="btn btn-outline-primary">
+                  <button class="btn btn-outline-primary" (click)="registerAdmin()">
                     <i class="bi bi-person-plus"></i> Register Admin
                   </button>
-                  <button class="btn btn-outline-primary">
+                  <button class="btn btn-outline-primary" (click)="generateReports()">
                     <i class="bi bi-file-earmark-text"></i> Generate Reports
                   </button>
-                  <button class="btn btn-outline-primary">
+                  <button class="btn btn-outline-primary" (click)="systemSettings()">
                     <i class="bi bi-gear"></i> System Settings
                   </button>
                 </div>

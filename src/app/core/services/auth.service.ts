@@ -3,13 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
-
-export interface User {
-  id: number;
-  email: string;
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT';
-  name: string;
-}
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'

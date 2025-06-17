@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 import { BaseDashboardComponent } from '../base-dashboard.component';
 
 @Component({
@@ -18,5 +18,21 @@ export class TeacherDashboardComponent extends BaseDashboardComponent {
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'TEACHER';
+  }
+
+  createAssignment(): void {
+    this.router.navigate(['/assignments/new']);
+  }
+
+  gradeSubmissions(): void {
+    this.router.navigate(['/assignments/grade']);
+  }
+
+  scheduleClass(): void {
+    this.router.navigate(['/calendar/new']);
+  }
+
+  messageStudents(): void {
+    this.router.navigate(['/messages/new']);
   }
 } 

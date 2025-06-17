@@ -1,34 +1,51 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { User } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
+import { User } from '../../core/models/user.model';
 
 @Component({
   template: ''
 })
 export abstract class BaseDashboardComponent implements OnInit {
-  protected currentUser: User | null = null;
+  currentUser: User | null = null;
+  isSidebarCollapsed = false;
 
-  protected constructor(
+  constructor(
     protected authService: AuthService,
     protected router: Router
   ) {}
 
   ngOnInit(): void {
+    this.loadCurrentUser();
     this.checkAccess();
+  }
+
+  private loadCurrentUser(): void {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-  protected checkAccess(): void {
+  private checkAccess(): void {
     const userRole = this.authService.getUserRole();
     if (!userRole || !this.hasAccess(userRole)) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/unauthorized']);
     }
   }
 
   protected abstract hasAccess(userRole: string): boolean;
 
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
   logout(): void {
     this.authService.logout();
+  }
+
+  navigateToProfile(): void {
+    this.router.navigate(['/profile']);
+  }
+
+  navigateToSettings(): void {
+    this.router.navigate(['/settings']);
   }
 } 

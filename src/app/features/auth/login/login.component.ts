@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   loading = false;
   error = '';
   showPassword = false;
+  submitted = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -25,8 +26,12 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  // convenience getter for easy access to form fields
+  get f() { return this.loginForm.controls; }
+
   ngOnInit(): void {
-    // Redirect if already logged in
+    // Redirect if already logged inc
+    console.log(this.authService.isAuthenticated()+'Ganesh'+'login');
     if (this.authService.isAuthenticated()) {
       this.navigateByRole();
     }
@@ -37,6 +42,8 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.submitted = true;
+    
     if (this.loginForm.invalid) {
       return;
     }
@@ -61,16 +68,13 @@ export class LoginComponent implements OnInit {
     const role = this.authService.getUserRole();
     switch (role) {
       case 'SUPER_ADMIN':
-        this.router.navigate(['/super-admin-dashboard']);
+        this.router.navigate(['/dashboard/super-admin']);
         break;
       case 'ADMIN':
-        this.router.navigate(['/admin-dashboard']);
+        this.router.navigate(['/dashboard/admin']);
         break;
       case 'TEACHER':
-        this.router.navigate(['/teacher-dashboard']);
-        break;
-      case 'STUDENT':
-        this.router.navigate(['/student-dashboard']);
+        this.router.navigate(['/dashboard/teacher']);
         break;
       default:
         this.router.navigate(['/login']);

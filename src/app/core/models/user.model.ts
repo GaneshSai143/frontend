@@ -1,12 +1,12 @@
 export interface User {
   id: number;
-  username: string;
   email: string;
+  username: string;
   firstName: string;
   lastName: string;
   role: 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT';
-  schoolId?: number;
   isActive: boolean;
+  lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
 } 

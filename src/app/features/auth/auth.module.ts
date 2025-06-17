@@ -20,4 +20,6 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     ])
   ]
 })
-export class AuthModule { } 
+export class AuthModule { constructor(){
+  console.log('Ganesh');
+}} 
