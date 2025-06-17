@@ -1,24 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './components/login/login.component';
+import { RouterModule } from '@angular/router';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: LoginComponent
-  }
-];
+import { LoginComponent } from './login/login.component';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    UnauthorizedComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild([
+      { path: 'login', component: LoginComponent },
+      { path: 'unauthorized', component: UnauthorizedComponent }
+    ])
   ]
 })
 export class AuthModule { } 

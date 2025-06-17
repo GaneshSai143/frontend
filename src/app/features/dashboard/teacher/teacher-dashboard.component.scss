@@ -1,0 +1,23 @@
+.dashboard-container {
+  padding: 2rem;
+  background-color: var(--light-color);
+  min-height: 100vh;
+}
+
+.dashboard-content {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card {
+  margin-bottom: 2rem;
+}
+
+.dashboard-card-header {
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 1rem;
+}
+ 

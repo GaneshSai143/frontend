@@ -1,0 +1,185 @@
+<div class="dashboard-container">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h3>Super Admin</h3>
+    </div>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">
+          <i class="bi bi-speedometer2"></i>
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-building"></i>
+          Schools
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-person-badge"></i>
+          Admins
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-gear"></i>
+          Settings
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container-fluid">
+        <button class="btn btn-link" id="sidebarToggle">
+          <i class="bi bi-list"></i>
+        </button>
+        <div class="ms-auto d-flex align-items-center">
+          <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i>
+              <span class="ms-2">Super Admin</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" (click)="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="content-wrapper">
+      <div class="container-fluid">
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="card stat-card">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Total Schools</h6>
+                <h2 class="card-title mb-0">150</h2>
+                <div class="stat-trend up">
+                  <i class="bi bi-arrow-up"></i>
+                  <span>12%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Active Admins</h6>
+                <h2 class="card-title mb-0">45</h2>
+                <div class="stat-trend up">
+                  <i class="bi bi-arrow-up"></i>
+                  <span>8%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Total Teachers</h6>
+                <h2 class="card-title mb-0">1,200</h2>
+                <div class="stat-trend up">
+                  <i class="bi bi-arrow-up"></i>
+                  <span>15%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card stat-card">
+              <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
+                <h2 class="card-title mb-0">15,000</h2>
+                <div class="stat-trend up">
+                  <i class="bi bi-arrow-up"></i>
+                  <span>20%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Recent Activity</h5>
+              </div>
+              <div class="card-body">
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-icon bg-primary">
+                      <i class="bi bi-building"></i>
+                    </div>
+                    <div class="activity-content">
+                      <h6>New School Added</h6>
+                      <p>St. Mary's High School was added to the system</p>
+                      <small class="text-muted">2 hours ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon bg-success">
+                      <i class="bi bi-person-badge"></i>
+                    </div>
+                    <div class="activity-content">
+                      <h6>New Admin Registered</h6>
+                      <p>John Doe was registered as a school admin</p>
+                      <small class="text-muted">5 hours ago</small>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-icon bg-warning">
+                      <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-content">
+                      <h6>System Update</h6>
+                      <p>System maintenance completed successfully</p>
+                      <small class="text-muted">1 day ago</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Add New School
+                  </button>
+                  <button class="btn btn-outline-primary">
+                    <i class="bi bi-person-plus"></i> Register Admin
+                  </button>
+                  <button class="btn btn-outline-primary">
+                    <i class="bi bi-file-earmark-text"></i> Generate Reports
+                  </button>
+                  <button class="btn btn-outline-primary">
+                    <i class="bi bi-gear"></i> System Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div> 
