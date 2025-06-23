@@ -1,43 +1,50 @@
 <div class="dashboard-container">
   <!-- Sidebar -->
-  <nav class="sidebar">
+  <nav class="sidebar"
+       [class.collapsed]="isSidebarCollapsed && !isMobileView"
+       [class.show]="showMobileSidebar && isMobileView">
     <div class="sidebar-header">
       <h3>Super Admin</h3>
     </div>
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link active" routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <a class="nav-link" routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMobileView && closeMobileSidebar()">
           <i class="bi bi-speedometer2"></i>
-          Dashboard
+          <span>Dashboard</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="navigateToSchools()" routerLinkActive="active">
+        <a class="nav-link" routerLink="/schools" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
           <i class="bi bi-building"></i>
-          Schools
+          <span>Schools</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="navigateToAdmins()" routerLinkActive="active">
+        <a class="nav-link" routerLink="/admins" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
           <i class="bi bi-person-badge"></i>
-          Admins
+          <span>Admins</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="navigateToSettings()" routerLinkActive="active">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
           <i class="bi bi-gear"></i>
-          Settings
+          <span>Settings</span>
         </a>
       </li>
     </ul>
   </nav>
 
+  <!-- Sidebar Overlay for mobile -->
+  <div class="sidebar-overlay"
+       [class.active]="showMobileSidebar && isMobileView"
+       (click)="closeMobileSidebar()"></div>
+
   <!-- Main Content -->
-  <main class="main-content">
+  <main class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed && !isMobileView">
     <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+    <nav class="navbar top-navbar navbar-expand-lg navbar-light bg-white">
       <div class="container-fluid">
-        <button class="btn btn-link" id="sidebarToggle">
+        <button class="btn btn-link" id="sidebarToggle" (click)="toggleSidebar()">
           <i class="bi bi-list"></i>
         </button>
         <!-- <div class="ms-auto d-flex align-items-center"> -->

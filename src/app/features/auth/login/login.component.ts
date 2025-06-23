@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   error = '';
   showPassword = false;
   submitted = false;
+  carouselSlides: any[];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,6 +36,11 @@ export class LoginComponent implements OnInit {
     if (this.authService.isAuthenticated()) {
       this.navigateByRole();
     }
+    this.carouselSlides = [
+      { image: 'assets/images/carousel-1.png', alt: 'Empowering Students', description: 'Empowering Students' },
+      { image: 'assets/images/carousel-2.png', alt: 'Real-time Performance Tracking', description: 'Real-time Performance Tracking' },
+      { image: 'assets/images/carousel-3.png', alt: 'Seamless Communication', description: 'Seamless Communication' }
+    ];
   }
 
   togglePasswordVisibility(): void {

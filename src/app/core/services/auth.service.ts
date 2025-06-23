@@ -12,6 +12,9 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  private authenticationChangedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  public authenticationChanged = this.authenticationChangedSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     private router: Router
@@ -38,6 +41,7 @@ export class AuthService {
         tap(user => {
           localStorage.setItem('current_user', JSON.stringify(user));
           this.currentUserSubject.next(user);
+          this.authenticationChangedSubject.next(true); // Emit true on successful login
         })
       );
   }
@@ -46,6 +50,7 @@ export class AuthService {
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('current_user');
     this.currentUserSubject.next(null);
+    this.authenticationChangedSubject.next(false); // Emit false on logout
     this.router.navigate(['/login']);
   }
 

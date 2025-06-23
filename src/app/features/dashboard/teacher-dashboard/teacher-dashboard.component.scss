@@ -1,122 +1,12 @@
 @import '../../../styles/dashboard-common';
 
-.dashboard-container {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f8f9fa;
-}
+/* Specific styles for Teacher Dashboard */
 
-// Sidebar Styles
-.sidebar {
-  width: 250px;
-  background-color: #2c3e50;
-  color: #fff;
-  padding: 1rem;
-  transition: all 0.3s ease;
-
-  .sidebar-header {
-    padding: 1rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin-bottom: 1rem;
-
-    h3 {
-      margin: 0;
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-  }
-
-  .nav-link {
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.75rem 1rem;
-    border-radius: 5px;
-    transition: all 0.2s ease;
-
-    i {
-      margin-right: 0.5rem;
-    }
-
-    &:hover {
-      color: #fff;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    &.active {
-      color: #fff;
-      background-color: #3498db;
-    }
-  }
-}
-
-// Main Content Styles
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-// Navbar Styles
-.navbar {
-  padding: 1rem;
-  border-bottom: 1px solid #e9ecef;
-  background-color: #fff;
-
-  .btn-link {
-    color: #6c757d;
-    padding: 0.5rem;
-    font-size: 1.25rem;
-
-    &:hover {
-      color: #343a40;
-    }
-  }
-
-  .dropdown-toggle {
-    text-decoration: none;
-    color: #343a40;
-
-    &::after {
-      display: none;
-    }
-  }
-}
-
-// Content Wrapper Styles
-.content-wrapper {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
-}
-
-// Card Styles
-.card {
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
-
-  .card-header {
-    background-color: transparent;
-    border-bottom: 1px solid #e9ecef;
-    padding: 1rem 1.25rem;
-
-    .card-title {
-      font-weight: 600;
-      color: #2c3e50;
-    }
-  }
-
-  .card-body {
-    padding: 1.25rem;
-  }
-}
-
-// Stat Card Styles
+// Stat Card decorative element - if this is unique to teacher dashboard
 .stat-card {
   .card-body {
-    position: relative;
-    overflow: hidden;
+    position: relative; // Needed for the pseudo-element
+    overflow: hidden;   // Ensure pseudo-element doesn't spill out if not perfectly aligned
 
     &::after {
       content: '';
@@ -125,170 +15,121 @@
       right: 0;
       width: 80px;
       height: 80px;
-      background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), transparent);
-      border-radius: 0 0 0 100%;
+      background: linear-gradient(135deg, var(--stat-card-decoration-bg, rgba(52, 152, 219, 0.1)), transparent);
+      border-radius: 0 0 0 100%; // Creates a quarter circle shape
+      z-index: 0; // Ensure it's behind content
     }
   }
-
-  .card-subtitle {
-    font-size: 0.875rem;
-  }
-
-  .card-title {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #2c3e50;
-  }
-
-  .stat-trend {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.5rem;
-    border-radius: 20px;
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-
-    &.up {
-      background-color: rgba(40, 167, 69, 0.1);
-      color: #28a745;
-    }
-
-    &.down {
-      background-color: rgba(220, 53, 69, 0.1);
-      color: #dc3545;
-    }
-
-    i {
-      margin-right: 0.25rem;
-    }
+  // Ensure content within stat-card is above the pseudo-element
+  .card-subtitle, .card-title, .stat-trend {
+    position: relative;
+    z-index: 1;
   }
 }
 
-// Schedule List Styles
+
+// Schedule List Styles - specific to Teacher Dashboard
 .schedule-list {
   .schedule-item {
     display: flex;
     align-items: center;
-    padding: 1.25rem;
-    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 0; // Adjusted padding, common card might have its own
+    border-bottom: 1px solid var(--card-border-color, #e9ecef);
     transition: all 0.2s ease;
 
     &:last-child {
       border-bottom: none;
+      padding-bottom: 0; // No padding for the last item's bottom
     }
 
     &:hover {
-      background-color: #f8f9fa;
-      transform: translateX(5px);
+      background-color: var(--list-item-hover-bg, #f8f9fa);
+      // transform: translateX(5px); // Optional: subtle hover effect
+      border-radius: var(--card-border-radius, 12px); // Match card radius if item is inside a card
+      padding-left: 1rem; // Indent on hover
+      padding-right: 1rem;
     }
 
     .time {
-      min-width: 100px;
+      min-width: 100px; // Keep or adjust based on design
       font-weight: 500;
-      color: #2c3e50;
+      color: var(--text-color-strong, #2c3e50);
     }
 
     .class-info {
       flex: 1;
-      margin: 0 1.5rem;
+      margin: 0 1rem; // Adjusted margin
 
       h6 {
         margin: 0;
         font-weight: 600;
-        color: #2c3e50;
+        color: var(--text-color-strong, #2c3e50);
+        font-size: 0.95rem;
       }
 
       p {
         margin: 0.25rem 0 0;
-        color: #6c757d;
+        color: var(--text-color-muted, #6c757d);
         font-size: 0.875rem;
       }
     }
 
     .status {
       .badge {
-        padding: 0.5rem 0.75rem;
+        padding: 0.5em 0.75em; // Use em for padding relative to font size
         font-weight: 500;
+        font-size: 0.8rem;
         
-        &.bg-primary {
-          background-color: #3498db !important;
+        // Themeable badge colors - using specific classes for status
+        &.status-ongoing { // Example: more semantic class
+          background-color: var(--color-primary, #3498db) !important;
+          color: var(--button-primary-text, #fff);
         }
         
-        &.bg-secondary {
-          background-color: #95a5a6 !important;
+        &.status-upcoming { // Example
+          background-color: var(--color-secondary, #95a5a6) !important;
+           color: var(--button-primary-text, #fff);
+        }
+         &.status-completed { // Example
+          background-color: var(--color-success, #2ecc71) !important;
+           color: var(--button-primary-text, #fff);
         }
       }
     }
   }
 }
 
-// Quick Actions Styles
-.btn {
-  padding: 0.75rem 1rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-
-  i {
-    margin-right: 0.5rem;
-    transition: transform 0.2s ease;
-  }
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
-  }
-
-  &:hover i {
-    transform: scale(1.1);
-  }
-}
-
-// Online Status Badge
-.badge.bg-success {
-  background-color: #2ecc71 !important;
-  padding: 0.5rem 1rem;
+// Online Status Badge - specific styling if different from generic badges
+.navbar .badge.bg-success { // Scope to navbar if that's where it's used
+  background-color: var(--color-success, #2ecc71) !important;
+  color: var(--button-primary-text, #fff);
+  padding: 0.5em 1em;
   font-weight: 500;
 }
 
-// Responsive Styles
+
+// Responsive adjustments for Schedule List if needed
 @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: -250px;
-    top: 0;
-    bottom: 0;
-    z-index: 1000;
-
-    &.show {
-      left: 0;
-    }
-  }
-
-  .content-wrapper {
-    padding: 1rem;
-  }
-
-  .stat-card {
-    .card-title {
-      font-size: 1.5rem;
-    }
-  }
-
   .schedule-list {
     .schedule-item {
       flex-direction: column;
+      align-items: flex-start; // Align items to the start in column layout
 
-      .schedule-time {
+      .time {
         width: 100%;
         margin-bottom: 0.5rem;
+        font-size: 0.9rem;
       }
 
-      .schedule-content {
+      .class-info {
         margin-left: 0;
+        margin-bottom: 0.5rem;
+        width: 100%;
+      }
+      .status {
+        width: 100%;
+        text-align: left; // Or right, depending on design
       }
     }
   }
-} 
+}
