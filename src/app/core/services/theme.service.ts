@@ -63,30 +63,59 @@ export class ThemeService {
     }
   };
 
-  constructor(private authService: AuthService) {}
+  private readonly themeStorageKey = 'user_selected_theme';
 
-  applyThemeForCurrentUser(): void {
-    const role = this.authService.getUserRole();
-    if (role) {
-      this.setTheme(role);
+  constructor(private authService: AuthService) {
+    this.loadAndApplyPersistedTheme();
+  }
+
+  private loadAndApplyPersistedTheme(): void {
+    const persistedTheme = localStorage.getItem(this.themeStorageKey);
+    if (persistedTheme) {
+      this.applyTheme(persistedTheme, false); // Apply without saving again
     } else {
-      this.setTheme('DEFAULT'); // Apply default if no role (e.g., login page)
+      // If no persisted theme, apply based on role (e.g., on initial login)
+      this.applyThemeForCurrentUser(false);
     }
   }
 
-  private setTheme(role: string): void {
-    if (this.currentTheme === role) {
-      return; // Theme already applied
+  applyThemeForCurrentUser(savePreference: boolean = true): void {
+    // Check if a user-selected theme is already overriding this
+    const persistedTheme = localStorage.getItem(this.themeStorageKey);
+    if (persistedTheme && this.themes[persistedTheme]) {
+      this.applyTheme(persistedTheme, false); // Don't re-save if it's already the persisted one
+      return;
     }
 
-    const theme = this.themes[role] || this.themes['DEFAULT'];
+    const role = this.authService.getUserRole();
+    const themeToApply = role && this.themes[role] ? role : 'DEFAULT';
+    this.applyTheme(themeToApply, savePreference && role ? false : savePreference);
+    // Don't save role-based theme as a "preference" unless it's default or no role
+  }
+
+  setTheme(themeName: string): void { // Called by SuperAdmin to select a theme
+    this.applyTheme(themeName, true);
+  }
+
+  private applyTheme(themeName: string, saveToLocalStorage: boolean): void {
+    if (this.currentTheme === themeName && !saveToLocalStorage) { // Avoid re-applying if already current unless saving
+        // If saveToLocalStorage is true, we might be re-applying the same theme but ensuring it's saved.
+        if(this.currentTheme === themeName && localStorage.getItem(this.themeStorageKey) === themeName) return;
+    }
+
+    const theme = this.themes[themeName] || this.themes['DEFAULT'];
     Object.keys(theme).forEach(key => {
       document.documentElement.style.setProperty(key, theme[key]);
     });
-    this.currentTheme = role;
+    this.currentTheme = themeName;
+
+    if (saveToLocalStorage) {
+      localStorage.setItem(this.themeStorageKey, themeName);
+    }
   }
 
-  clearTheme(): void {
+  clearTheme(): void { // Clears current styles and persisted preference
+    localStorage.removeItem(this.themeStorageKey);
     const themeToClear = this.themes[this.currentTheme] || this.themes['DEFAULT'];
     Object.keys(themeToClear).forEach(key => {
       document.documentElement.style.removeProperty(key);

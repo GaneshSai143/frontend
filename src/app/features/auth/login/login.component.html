@@ -88,7 +88,7 @@
 
     <!-- Right side - Carousel -->
     <div class="col-md-6 login-carousel-container">
-      <div id="loginCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div id="loginCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#loginCarousel" [attr.data-bs-slide-to]="i" [class.active]="i === 0" *ngFor="let slide of carouselSlides; let i = index" [attr.aria-current]="i === 0 ? 'true' : 'false'" [attr.aria-label]="'Slide ' + (i + 1)"></button>
         </div>
