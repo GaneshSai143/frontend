@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { BaseDashboardComponent } from '../base-dashboard.component';
@@ -11,9 +11,11 @@ import { BaseDashboardComponent } from '../base-dashboard.component';
 export class TeacherDashboardComponent extends BaseDashboardComponent {
   constructor(
     protected override authService: AuthService,
-    protected override router: Router
+    protected override router: Router,
+    protected override renderer: Renderer2,
+    protected override el: ElementRef
   ) {
-    super(authService, router);
+    super(authService, router, renderer, el);
   }
 
   protected override hasAccess(userRole: string): boolean {
