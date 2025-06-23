@@ -32,6 +32,12 @@ const routes: Routes = [
         loadChildren: () => import('./features/dashboard/teacher-dashboard/teacher-dashboard.module').then(m => m.TeacherDashboardModule),
         canActivate: [RoleGuard],
         data: { roles: ['TEACHER'] }
+      },
+      {
+        path: 'student',
+        loadChildren: () => import('./features/dashboard/student-dashboard/student-dashboard.module').then(m => m.StudentDashboardModule),
+        canActivate: [RoleGuard],
+        data: { roles: ['STUDENT'] }
       }
     ]
   },
