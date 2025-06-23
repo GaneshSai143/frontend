@@ -58,7 +58,7 @@
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle"></i>
-              <span class="ms-2">{{ currentUser?.name || 'Admin' }}</span>
+              <span class="ms-2">{{ currentUser?.username || (currentUser?.firstName + ' ' + currentUser?.lastName) || 'Admin' }}</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" (click)="navigateToProfile()"><i class="bi bi-person"></i> Profile</a></li>

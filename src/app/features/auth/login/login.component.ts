@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   error = '';
   showPassword = false;
   submitted = false;
-  carouselSlides: any[];
+  carouselSlides: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
