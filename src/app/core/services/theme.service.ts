@@ -79,7 +79,7 @@ export class ThemeService {
       return; // Theme already applied
     }
 
-    const theme = this.themes[role] || this.themes.DEFAULT;
+    const theme = this.themes[role] || this.themes['DEFAULT'];
     Object.keys(theme).forEach(key => {
       document.documentElement.style.setProperty(key, theme[key]);
     });
@@ -87,7 +87,7 @@ export class ThemeService {
   }
 
   clearTheme(): void {
-    const themeToClear = this.themes[this.currentTheme] || this.themes.DEFAULT;
+    const themeToClear = this.themes[this.currentTheme] || this.themes['DEFAULT'];
     Object.keys(themeToClear).forEach(key => {
       document.documentElement.style.removeProperty(key);
     });
