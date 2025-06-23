@@ -7,7 +7,8 @@
     "email": "super@example.com",
     "role": "SUPER_ADMIN",
     "isActive": true,
-    "schoolId": null
+    "schoolId": null,
+    "preferredTheme": "SUPER_ADMIN"
   },
   {
     "id": "usr002",
@@ -17,7 +18,8 @@
     "email": "principal.johnson@greenwoodhigh.edu",
     "role": "ADMIN",
     "isActive": true,
-    "schoolId": "sch001"
+    "schoolId": "sch001",
+    "preferredTheme": "ADMIN"
   },
   {
     "id": "usr003",

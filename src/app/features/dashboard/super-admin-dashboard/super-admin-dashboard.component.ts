@@ -44,6 +44,13 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   totalStudents = 0;
   totalActiveUsers = 0;
 
+  recentActivities: any[] = [
+    { icon: 'bi-building', type: 'primary', title: 'New School Added', description: 'Greenwood High was added to the system.', time: '2 hours ago' },
+    { icon: 'bi-person-plus', type: 'success', title: 'New Principal Registered', description: 'Alice Johnson (principal.johnson) was registered.', time: '5 hours ago' },
+    { icon: 'bi-person-check', type: 'info', title: 'User Activated', description: 'Student emily.white account was activated.', time: '1 day ago'},
+    { icon: 'bi-palette', type: 'warning', title: 'Theme Changed', description: 'Default theme was applied by an admin.', time: '2 days ago'}
+  ];
+
   activeTab: string = 'overview'; // Default to overview tab
   private tabInstances: { [key: string]: any } = {};
 

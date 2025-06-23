@@ -16,23 +16,24 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Apply theme on initial app load based on current auth state
-    // This handles scenarios where the user is already logged in (e.g. page refresh)
+    // ThemeService constructor now handles initial theme load by subscribing to currentUser$
+    // So, explicit call here on init might be redundant if currentUser$ emits synchronously
+    // or if initial state is handled well by the service's subscription.
+    // However, keeping a call tied to `isAuthenticated` can be a safeguard.
     if (this.authService.isAuthenticated()) {
-      this.themeService.applyThemeForCurrentUser();
+      this.themeService.applyThemeForAuthenticatedUser();
     } else {
-      // Optional: Apply a default theme or clear theme for login page
-      // this.themeService.setTheme('DEFAULT'); // Or a specific login page theme
+      this.themeService.applyTheme('DEFAULT'); // Ensure default for logged-out state
     }
 
     // Subscribe to login/logout events to change theme dynamically
     this.authService.authenticationChanged.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        // ThemeService constructor and applyThemeForCurrentUser handle persisted vs role-based
-        this.themeService.applyThemeForCurrentUser();
+        this.themeService.applyThemeForAuthenticatedUser();
       } else {
-        this.themeService.clearTheme(); // Clear user-selected theme and styles
-        this.themeService.setTheme('DEFAULT'); // Explicitly apply default theme for login/logged-out state
+        // On logout, ThemeService's currentUser$ subscription will receive null
+        // and apply 'DEFAULT'. We can also be explicit here.
+        this.themeService.applyTheme('DEFAULT');
       }
     });
   }

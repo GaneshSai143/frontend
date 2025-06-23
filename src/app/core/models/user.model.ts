@@ -9,4 +9,5 @@ export interface User {
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
-} 
+  preferredTheme?: string; // Added for user-specific theme preference
+}
