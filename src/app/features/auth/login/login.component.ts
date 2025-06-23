@@ -37,9 +37,9 @@ export class LoginComponent implements OnInit {
       this.navigateByRole();
     }
     this.carouselSlides = [
-      { image: 'assets/images/carousel-1.png', alt: 'Empowering Students', description: 'Empowering Students' },
-      { image: 'assets/images/carousel-2.png', alt: 'Real-time Performance Tracking', description: 'Real-time Performance Tracking' },
-      { image: 'assets/images/carousel-3.png', alt: 'Seamless Communication', description: 'Seamless Communication' }
+      { image: 'https://placehold.co/1200x800/0056b3/FFFFFF?text=Empowering+Students', alt: 'Empowering Students', description: 'Empowering Students' },
+      { image: 'https://placehold.co/1200x800/28a745/FFFFFF?text=Real-time+Tracking', alt: 'Real-time Performance Tracking', description: 'Real-time Performance Tracking' },
+      { image: 'https://placehold.co/1200x800/6f42c1/FFFFFF?text=Seamless+Communication', alt: 'Seamless Communication', description: 'Seamless Communication' }
     ];
   }
 
