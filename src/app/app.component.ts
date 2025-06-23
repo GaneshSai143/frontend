@@ -28,10 +28,11 @@ export class AppComponent implements OnInit {
     // Subscribe to login/logout events to change theme dynamically
     this.authService.authenticationChanged.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
+        // ThemeService constructor and applyThemeForCurrentUser handle persisted vs role-based
         this.themeService.applyThemeForCurrentUser();
       } else {
-        this.themeService.clearTheme(); // Or set a default/login theme
-        // this.themeService.setTheme('DEFAULT');
+        this.themeService.clearTheme(); // Clear user-selected theme and styles
+        this.themeService.setTheme('DEFAULT'); // Explicitly apply default theme for login/logged-out state
       }
     });
   }

@@ -1,0 +1,116 @@
+[
+  {
+    "id": "usr001",
+    "username": "superadmin",
+    "firstName": "Super",
+    "lastName": "Admin",
+    "email": "super@example.com",
+    "role": "SUPER_ADMIN",
+    "isActive": true,
+    "schoolId": null
+  },
+  {
+    "id": "usr002",
+    "username": "principal.johnson",
+    "firstName": "Alice",
+    "lastName": "Johnson",
+    "email": "principal.johnson@greenwoodhigh.edu",
+    "role": "ADMIN",
+    "isActive": true,
+    "schoolId": "sch001"
+  },
+  {
+    "id": "usr003",
+    "username": "teacher.davis",
+    "firstName": "Robert",
+    "lastName": "Davis",
+    "email": "robert.davis@greenwoodhigh.edu",
+    "role": "TEACHER",
+    "isActive": true,
+    "schoolId": "sch001"
+  },
+  {
+    "id": "usr004",
+    "username": "student.emily",
+    "firstName": "Emily",
+    "lastName": "White",
+    "email": "emily.white@greenwoodhigh.edu",
+    "role": "STUDENT",
+    "isActive": true,
+    "schoolId": "sch001",
+    "grade": "10"
+  },
+  {
+    "id": "usr005",
+    "username": "principal.miller",
+    "firstName": "Michael",
+    "lastName": "Miller",
+    "email": "michael.miller@northwoodacademy.org",
+    "role": "ADMIN",
+    "isActive": true,
+    "schoolId": "sch002"
+  },
+  {
+    "id": "usr006",
+    "username": "teacher.wilson",
+    "firstName": "Sarah",
+    "lastName": "Wilson",
+    "email": "sarah.wilson@northwoodacademy.org",
+    "role": "TEACHER",
+    "isActive": true,
+    "schoolId": "sch002"
+  },
+  {
+    "id": "usr007",
+    "username": "student.david",
+    "firstName": "David",
+    "lastName": "Brown",
+    "email": "david.brown@northwoodacademy.org",
+    "role": "STUDENT",
+    "isActive": true,
+    "schoolId": "sch002",
+    "grade": "9"
+  },
+  {
+    "id": "usr008",
+    "username": "principal.chen",
+    "firstName": "Linda",
+    "lastName": "Chen",
+    "email": "linda.chen@springfieldelem.edu",
+    "role": "ADMIN",
+    "isActive": false,
+    "schoolId": "sch003"
+  },
+  {
+    "id": "usr009",
+    "username": "teacher.lee",
+    "firstName": "David",
+    "lastName": "Lee",
+    "email": "david.lee@greenwoodhigh.edu",
+    "role": "TEACHER",
+    "isActive": true,
+    "schoolId": "sch001"
+  },
+  {
+    "id": "usr010",
+    "username": "student.olivia",
+    "firstName": "Olivia",
+    "lastName": "Martinez",
+    "email": "olivia.martinez@greenwoodhigh.edu",
+    "role": "STUDENT",
+    "isActive": true,
+    "schoolId": "sch001",
+    "grade": "11"
+  },
+   {
+    "id": "usr011",
+    "username": "student.james",
+    "firstName": "James",
+    "lastName": "Rodriguez",
+    "email": "james.rodriguez@northwoodacademy.org",
+    "role": "STUDENT",
+    "isActive": false,
+    "schoolId": "sch002",
+    "grade": "10"
+  }
+]

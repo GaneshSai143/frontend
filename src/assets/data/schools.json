@@ -1,0 +1,35 @@
+[
+  {
+    "id": "sch001",
+    "name": "Greenwood High",
+    "principalId": "usr002",
+    "address": "123 Oak Street, Springfield",
+    "email": "info@greenwoodhigh.edu",
+    "phone": "555-1234",
+    "establishedDate": "1985-07-15",
+    "studentCount": 1200,
+    "teacherCount": 60
+  },
+  {
+    "id": "sch002",
+    "name": "Northwood Academy",
+    "principalId": "usr005",
+    "address": "456 Pine Avenue, Northwood",
+    "email": "contact@northwoodacademy.org",
+    "phone": "555-5678",
+    "establishedDate": "1992-09-01",
+    "studentCount": 850,
+    "teacherCount": 45
+  },
+  {
+    "id": "sch003",
+    "name": "Springfield Elementary",
+    "principalId": "usr008",
+    "address": "789 Maple Drive, Springfield",
+    "email": "office@springfieldelem.edu",
+    "phone": "555-9012",
+    "establishedDate": "1970-03-20",
+    "studentCount": 600,
+    "teacherCount": 30
+  }
+]
