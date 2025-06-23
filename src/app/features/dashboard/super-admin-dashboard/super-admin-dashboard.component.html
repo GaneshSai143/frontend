@@ -38,6 +38,12 @@
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" routerLink="/profile" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
+          <i class="bi bi-person-circle"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" routerLink="/settings" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()"> <!-- Settings remains a route -->
           <i class="bi bi-gear"></i>
           <span>Settings</span>
@@ -123,10 +129,12 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Schools</h6>
-                    <h2 class="card-title mb-0">150</h2> <!-- Placeholder -->
+                    <h2 class="card-title mb-0">{{ totalSchools }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
-                      <span>12%</span>
+                      <!-- Trend percentage can be dynamic later if needed -->
+                      <span>&nbsp;</span>
+                    </div>
                     </div>
                   </div>
                 </div>
@@ -134,11 +142,11 @@
               <div class="col-md-3">
                 <div class="card stat-card">
                   <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Active Principals</h6>
-                    <h2 class="card-title mb-0">45</h2> <!-- Placeholder -->
+                    <h6 class="card-subtitle mb-2 text-muted">Total Principals</h6>
+                    <h2 class="card-title mb-0">{{ totalPrincipals }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
-                      <span>8%</span>
+                      <span>&nbsp;</span>
                     </div>
                   </div>
                 </div>
@@ -147,10 +155,10 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Teachers</h6>
-                    <h2 class="card-title mb-0">1,200</h2> <!-- Placeholder -->
+                    <h2 class="card-title mb-0">{{ totalTeachers }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
-                      <span>15%</span>
+                      <span>&nbsp;</span>
                     </div>
                   </div>
                 </div>
@@ -159,10 +167,10 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
-                    <h2 class="card-title mb-0">15,000</h2> <!-- Placeholder -->
+                    <h2 class="card-title mb-0">{{ totalStudents }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
-                      <span>20%</span>
+                      <span>&nbsp;</span>
                     </div>
                   </div>
                 </div>
@@ -177,19 +185,21 @@
                     <h5 class="card-title mb-0">Recent Activity</h5>
                   </div>
                   <div class="card-body">
-                    <div class="activity-list">
-                      <div class="activity-item">
-                        <div class="activity-icon bg-primary">
-                          <i class="bi bi-building"></i>
+                    <div class="activity-list" *ngIf="recentActivities.length > 0; else noRecentActivity">
+                      <div class="activity-item" *ngFor="let activity of recentActivities">
+                        <div class="activity-icon" [ngClass]="'bg-' + activity.type">
+                          <i class="bi" [ngClass]="activity.icon"></i>
                         </div>
                         <div class="activity-content">
-                          <h6>New School Added</h6>
-                          <p>St. Mary's High School was added to the system</p>
-                          <small class="text-muted">2 hours ago</small>
+                          <h6>{{ activity.title }}</h6>
+                          <p>{{ activity.description }}</p>
+                          <small class="text-muted">{{ activity.time }}</small>
                         </div>
                       </div>
-                      <!-- More activity items -->
                     </div>
+                    <ng-template #noRecentActivity>
+                      <p class="text-muted text-center">No recent activities to display.</p>
+                    </ng-template>
                   </div>
                 </div>
               </div>

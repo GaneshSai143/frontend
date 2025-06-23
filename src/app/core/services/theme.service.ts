@@ -63,44 +63,39 @@ export class ThemeService {
     }
   };
 
-  private readonly themeStorageKey = 'user_selected_theme';
-
   constructor(private authService: AuthService) {
-    this.loadAndApplyPersistedTheme();
+    // Subscribe to currentUser changes to apply theme initially or when user logs in/out
+    this.authService.currentUser$.subscribe(user => {
+      if (user && user.preferredTheme && this.themes[user.preferredTheme]) {
+        this.applyTheme(user.preferredTheme);
+      } else if (user && user.role && this.themes[user.role]) {
+        this.applyTheme(user.role); // Apply role-based theme
+      } else {
+        this.applyTheme('DEFAULT'); // Fallback for no user or no preferred/role theme
+      }
+    });
   }
 
-  private loadAndApplyPersistedTheme(): void {
-    const persistedTheme = localStorage.getItem(this.themeStorageKey);
-    if (persistedTheme) {
-      this.applyTheme(persistedTheme, false); // Apply without saving again
+  // Called by SuperAdmin to select and "save" a theme
+  setTheme(themeName: string): void {
+    const currentUser = this.authService.getCurrentUser();
+    if (currentUser) {
+      // Update user object in AuthService (simulates backend update)
+      this.authService.updateCurrentUserProfile({ preferredTheme: themeName });
+      // AuthService's currentUser$ will emit, and the subscription in constructor will apply it.
+      // Or, apply directly if immediate visual feedback is desired before observable kicks in:
+      this.applyTheme(themeName);
     } else {
-      // If no persisted theme, apply based on role (e.g., on initial login)
-      this.applyThemeForCurrentUser(false);
+      // If no user, perhaps apply as a temporary session theme (not persisted to user)
+      // For now, we only allow theme changes for logged-in users by SuperAdmin.
+      this.applyTheme(themeName); // Apply visually but won't be "saved" to a user object
     }
   }
 
-  applyThemeForCurrentUser(savePreference: boolean = true): void {
-    // Check if a user-selected theme is already overriding this
-    const persistedTheme = localStorage.getItem(this.themeStorageKey);
-    if (persistedTheme && this.themes[persistedTheme]) {
-      this.applyTheme(persistedTheme, false); // Don't re-save if it's already the persisted one
+  // Applies the theme to the document
+  private applyTheme(themeName: string): void {
+    if (this.currentTheme === themeName) {
       return;
-    }
-
-    const role = this.authService.getUserRole();
-    const themeToApply = role && this.themes[role] ? role : 'DEFAULT';
-    this.applyTheme(themeToApply, savePreference && role ? false : savePreference);
-    // Don't save role-based theme as a "preference" unless it's default or no role
-  }
-
-  setTheme(themeName: string): void { // Called by SuperAdmin to select a theme
-    this.applyTheme(themeName, true);
-  }
-
-  private applyTheme(themeName: string, saveToLocalStorage: boolean): void {
-    if (this.currentTheme === themeName && !saveToLocalStorage) { // Avoid re-applying if already current unless saving
-        // If saveToLocalStorage is true, we might be re-applying the same theme but ensuring it's saved.
-        if(this.currentTheme === themeName && localStorage.getItem(this.themeStorageKey) === themeName) return;
     }
 
     const theme = this.themes[themeName] || this.themes['DEFAULT'];
@@ -108,18 +103,33 @@ export class ThemeService {
       document.documentElement.style.setProperty(key, theme[key]);
     });
     this.currentTheme = themeName;
-
-    if (saveToLocalStorage) {
-      localStorage.setItem(this.themeStorageKey, themeName);
-    }
+    console.log(`Theme applied: ${themeName}`);
   }
 
-  clearTheme(): void { // Clears current styles and persisted preference
-    localStorage.removeItem(this.themeStorageKey);
+  // Clears any applied theme and reverts to default (e.g., on logout)
+  clearTheme(): void {
+    // Remove specific theme properties
     const themeToClear = this.themes[this.currentTheme] || this.themes['DEFAULT'];
     Object.keys(themeToClear).forEach(key => {
-      document.documentElement.style.removeProperty(key);
+        if (key.startsWith('--')) { // Ensure we only remove CSS variables we set
+            document.documentElement.style.removeProperty(key);
+        }
     });
-    this.currentTheme = '';
+    this.currentTheme = ''; // Reset current theme tracking
+    // Optionally, re-apply the actual default theme values if clearing means "go to default"
+    // this.applyTheme('DEFAULT');
+    console.log('Theme cleared. Default CSS will take over or apply explicit default.');
+  }
+
+   // This method is called by AppComponent when auth state changes
+   public applyThemeForAuthenticatedUser(): void {
+    const user = this.authService.getCurrentUser();
+    if (user && user.preferredTheme && this.themes[user.preferredTheme]) {
+      this.applyTheme(user.preferredTheme);
+    } else if (user && user.role && this.themes[user.role]) {
+      this.applyTheme(user.role);
+    } else {
+      this.applyTheme('DEFAULT');
+    }
   }
 }

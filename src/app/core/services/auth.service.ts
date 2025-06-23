@@ -70,6 +70,24 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+  updateCurrentUserProfile(userData: Partial<User>): void {
+    const currentUser = this.currentUserSubject.value;
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...userData };
+      this.currentUserSubject.next(updatedUser);
+      localStorage.setItem('current_user', JSON.stringify(updatedUser));
+      // Simulate backend update success by immediately updating local state
+      // In a real app, this would involve an HTTP PUT/PATCH request
+      // and then updating the subject upon successful response.
+
+      // If SuperAdminDataService is the source of truth for users in this demo:
+      // this.superAdminDataService.updateUser(updatedUser).subscribe();
+      // This would require injecting SuperAdminDataService which might create a circular dependency
+      // or require a more centralized state management. For now, local update is sufficient for demo.
+      console.log('Simulated user profile update:', updatedUser);
+    }
+  }
+
   private parseJwt(token: string): User {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
