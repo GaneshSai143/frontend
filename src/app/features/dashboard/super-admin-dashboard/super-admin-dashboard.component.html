@@ -8,25 +8,37 @@
     </div>
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link" routerLink="." routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" (click)="isMobileView && closeMobileSidebar()">
+        <a class="nav-link" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
           <i class="bi bi-speedometer2"></i>
-          <span>Dashboard</span>
+          <span>Overview</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/schools" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
+        <a class="nav-link" [class.active]="activeTab === 'manage-schools'" (click)="setActiveTab('manage-schools')">
           <i class="bi bi-building"></i>
-          <span>Schools</span>
+          <span>Manage Schools</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/admins" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
+        <a class="nav-link" [class.active]="activeTab === 'manage-principals'" (click)="setActiveTab('manage-principals')">
           <i class="bi bi-person-badge"></i>
-          <span>Admins</span>
+          <span>Manage Principals</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/settings" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()">
+        <a class="nav-link" [class.active]="activeTab === 'view-students'" (click)="setActiveTab('view-students')">
+          <i class="bi bi-people"></i>
+          <span>View Students</span>
+        </a>
+      </li>
+       <li class="nav-item">
+        <a class="nav-link" [class.active]="activeTab === 'reports-stats'" (click)="setActiveTab('reports-stats')">
+          <i class="bi bi-bar-chart-line"></i>
+          <span>Reports</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active" (click)="isMobileView && closeMobileSidebar()"> <!-- Settings remains a route -->
           <i class="bi bi-gear"></i>
           <span>Settings</span>
         </a>
@@ -55,10 +67,10 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
               <li><button class="dropdown-item" type="button" (click)="selectTheme('DEFAULT')">Default</button></li>
-              <li><button class="dropdown-item" type="button" (click)="selectTheme('SUPER_ADMIN')">Navy Blue (Super Admin)</button></li>
-              <li><button class="dropdown-item" type="button" (click)="selectTheme('ADMIN')">Deep Green (Principal)</button></li>
-              <li><button class="dropdown-item" type="button" (click)="selectTheme('TEACHER')">Indigo (Teacher)</button></li>
-              <li><button class="dropdown-item" type="button" (click)="selectTheme('STUDENT')">Teal (Student)</button></li>
+              <li><button class="dropdown-item" type="button" (click)="selectTheme('SUPER_ADMIN')">Navy Blue</button></li>
+              <li><button class="dropdown-item" type="button" (click)="selectTheme('ADMIN')">Deep Green</button></li>
+              <li><button class="dropdown-item" type="button" (click)="selectTheme('TEACHER')">Indigo</button></li>
+              <li><button class="dropdown-item" type="button" (click)="selectTheme('STUDENT')">Teal</button></li>
             </ul>
           </div>
 
