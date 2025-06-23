@@ -44,6 +44,10 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   totalStudents = 0;
   totalActiveUsers = 0;
 
+  activeTab: string = 'overview'; // Default to overview tab
+  private tabInstances: { [key: string]: any } = {};
+
+
   constructor(
     protected override authService: AuthService,
     protected override router: Router,
@@ -72,6 +76,31 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     const principalModalElement = document.getElementById('principalFormModal');
     if (principalModalElement) {
       this.principalModal = new bootstrap.Modal(principalModalElement);
+    }
+    this.initializeTabs();
+  }
+
+  initializeTabs(): void {
+    ['overview', 'manage-schools', 'manage-principals', 'view-students', 'reports-stats'].forEach(tabId => {
+      const tabElement = document.getElementById(`${tabId}-tab`);
+      if (tabElement) {
+        this.tabInstances[tabId] = new bootstrap.Tab(tabElement);
+      }
+    });
+    // Ensure the default activeTab is shown
+    if (this.tabInstances[this.activeTab]) {
+       // Timeout to ensure elements are fully rendered before trying to show tab
+      setTimeout(() => this.tabInstances[this.activeTab]?.show(), 0);
+    }
+  }
+
+  setActiveTab(tabId: string): void {
+    this.activeTab = tabId;
+    if (this.tabInstances[tabId]) {
+      this.tabInstances[tabId].show();
+    }
+    if (this.isMobileView) { // Close mobile sidebar on tab navigation
+        this.closeMobileSidebar();
     }
   }
 
@@ -326,25 +355,20 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     this.themeService.setTheme(themeName);
   }
 
-  // Original Navigation methods (can be removed if quick actions directly use routerLink)
-  navigateToSchools(): void {
-    this.router.navigate(['/schools']);
-  }
-
-  navigateToAdmins(): void {
-    this.router.navigate(['/admins']);
-  }
-
-  override navigateToSettings(): void {
-    this.router.navigate(['/settings']);
-  }
-
-  // Action methods
+  // Action methods from Overview Tab
   addNewSchool(): void {
-    this.router.navigate(['/schools/new']);
+    this.setActiveTab('manage-schools');
+    // Ensure modal is initialized if not already
+    if (!this.schoolModal) {
+        const schoolModalElement = document.getElementById('schoolFormModal');
+        if (schoolModalElement) {
+            this.schoolModal = new bootstrap.Modal(schoolModalElement);
+        }
+    }
+    this.openSchoolModal(null);
   }
 
-  registerPrincipal(): void { // Renamed from registerAdmin
+  registerPrincipal(): void {
     // This could now open the principal modal directly
     this.openPrincipalModal(null);
     // this.router.navigate(['/admins/new']); // Or navigate to a dedicated page if preferred
