@@ -93,7 +93,7 @@ export class ThemeService {
   }
 
   // Applies the theme to the document
-  private applyTheme(themeName: string): void {
+   applyTheme(themeName: string): void {
     if (this.currentTheme === themeName) {
       return;
     }
