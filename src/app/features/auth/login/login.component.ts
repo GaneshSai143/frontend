@@ -37,9 +37,9 @@ export class LoginComponent implements OnInit {
       this.navigateByRole();
     }
     this.carouselSlides = [
-      { image: 'https://placehold.co/1200x800/0056b3/FFFFFF?text=Empowering+Students', alt: 'Empowering Students', description: 'Empowering Students' },
-      { image: 'https://placehold.co/1200x800/28a745/FFFFFF?text=Real-time+Tracking', alt: 'Real-time Performance Tracking', description: 'Real-time Performance Tracking' },
-      { image: 'https://placehold.co/1200x800/6f42c1/FFFFFF?text=Seamless+Communication', alt: 'Seamless Communication', description: 'Seamless Communication' }
+      { image: 'https://cdni.iconscout.com/illustration/premium/thumb/school-girl-saying-good-bye-to-teacher-illustration-download-in-svg-png-gif-file-formats--building-waiving-hand-pack-people-illustrations-3697284.png?f=webp', alt: 'Empowering Students', description: 'Empowering Students' },
+      { image: 'https://cdni.iconscout.com/illustration/premium/thumb/girl-reading-book-in-school-library-illustration-download-svg-png-gif-file-formats--student-activities-pack-education-illustrations-3561229.png?f=webp', alt: 'Real-time Performance Tracking', description: 'Real-time Performance Tracking' },
+      { image: 'https://cdni.iconscout.com/illustration/premium/thumb/a-group-of-student-standing-together-and-discussing-after-school-illustration-download-in-svg-png-gif-file-formats--backpack-book-boy-characters-study-education-pack-illustrations-1819840.png?f=webp', alt: 'Seamless Communication', description: 'Seamless Communication' }
     ];
   }
 
