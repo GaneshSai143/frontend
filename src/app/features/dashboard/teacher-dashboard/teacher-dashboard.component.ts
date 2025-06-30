@@ -1,7 +1,9 @@
-import { Component, Renderer2, ElementRef } from '@angular/core';
+import { Component, OnInit, Renderer2, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { BaseDashboardComponent } from '../base-dashboard.component';
+import { TeacherDataService, TeacherDashboardData } from '../../../core/services/teacher-data.service';
+import { SnackbarService } from '../../../core/services/snackbar.service';
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -9,32 +11,63 @@ import { BaseDashboardComponent } from '../base-dashboard.component';
   styleUrls: ['./teacher-dashboard.component.scss']
 })
 export class TeacherDashboardComponent extends BaseDashboardComponent {
+  dashboardData: TeacherDashboardData | null = null;
+  isLoading = true;
+
   constructor(
     protected override authService: AuthService,
     protected override router: Router,
     protected override renderer: Renderer2,
-    protected override el: ElementRef
+    protected override el: ElementRef,
+    private teacherDataService: TeacherDataService,
+    private snackbarService: SnackbarService
   ) {
     super(authService, router, renderer, el);
+  }
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.loadDashboardData();
+  }
+
+  loadDashboardData(): void {
+    this.isLoading = true;
+    this.teacherDataService.getTeacherDashboardData().subscribe({
+      next: (data) => {
+        this.dashboardData = data;
+        this.isLoading = false;
+        // TODO: Update UI elements based on this.dashboardData
+      },
+      error: (err) => {
+        this.snackbarService.show('Failed to load teacher dashboard data.', 'error');
+        this.isLoading = false;
+        console.error(err);
+      }
+    });
   }
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'TEACHER';
   }
 
+  // Quick Actions - to be updated if APIs are available
   createAssignment(): void {
-    this.router.navigate(['/assignments/new']);
+    this.snackbarService.show('Create Assignment API not yet implemented.', 'info');
+    // this.router.navigate(['/assignments/new']);
   }
 
   gradeSubmissions(): void {
-    this.router.navigate(['/assignments/grade']);
+    this.snackbarService.show('Grade Submissions API not yet implemented.', 'info');
+    // this.router.navigate(['/assignments/grade']);
   }
 
   scheduleClass(): void {
-    this.router.navigate(['/calendar/new']);
+    this.snackbarService.show('Schedule Class API not yet implemented.', 'info');
+    // this.router.navigate(['/calendar/new']);
   }
 
   messageStudents(): void {
-    this.router.navigate(['/messages/new']);
+    this.snackbarService.show('Message Students API not yet implemented.', 'info');
+    // this.router.navigate(['/messages/new']);
   }
-} 
+}

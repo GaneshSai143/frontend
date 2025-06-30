@@ -1,135 +1,113 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service'; // To get user role
+import { AuthService } from './auth.service';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
-
-  private currentTheme = '';
-
-  // Define role-based themes
-  private themes: { [key: string]: { [key: string]: string } } = {
-    SUPER_ADMIN: {
-      '--sidebar-bg': '#000080', // Navy Blue
-      '--sidebar-link-active-bg': '#0000CD', // MediumBlue as active link
-      '--button-primary-bg': '#000080',
-      '--button-primary-border': '#000080',
-      '--button-primary-hover-bg': '#000050',
-      '--button-primary-hover-border': '#000050',
-      '--navbar-link-hover-color': '#000080',
-      '--stat-card-decoration-bg': 'rgba(0, 0, 128, 0.1)'
-      // Add other CSS variables as needed
-    },
-    ADMIN: { // Principal
-      '--sidebar-bg': '#006400', // Deep Green
-      '--sidebar-link-active-bg': '#008000', // Green as active link
-      '--button-primary-bg': '#006400',
-      '--button-primary-border': '#006400',
-      '--button-primary-hover-bg': '#004400',
-      '--button-primary-hover-border': '#004400',
-      '--navbar-link-hover-color': '#006400',
-      '--stat-card-decoration-bg': 'rgba(0, 100, 0, 0.1)'
-    },
-    TEACHER: {
-      '--sidebar-bg': '#4B0082', // Indigo
-      '--sidebar-link-active-bg': '#8A2BE2', // BlueViolet as active link
-      '--button-primary-bg': '#4B0082',
-      '--button-primary-border': '#4B0082',
-      '--button-primary-hover-bg': '#3A0062',
-      '--button-primary-hover-border': '#3A0062',
-      '--navbar-link-hover-color': '#4B0082',
-      '--stat-card-decoration-bg': 'rgba(75, 0, 130, 0.1)'
-    },
-    STUDENT: {
-      '--sidebar-bg': '#008080', // Teal
-      '--sidebar-link-active-bg': '#20B2AA', // LightSeaGreen as active link
-      '--button-primary-bg': '#008080',
-      '--button-primary-border': '#008080',
-      '--button-primary-hover-bg': '#006060',
-      '--button-primary-hover-border': '#006060',
-      '--navbar-link-hover-color': '#008080',
-      '--stat-card-decoration-bg': 'rgba(0, 128, 128, 0.1)'
-    },
-    DEFAULT: { // Fallback theme
-      '--sidebar-bg': '#2c3e50', // Default dark blue/grey
-      '--sidebar-link-active-bg': '#3498db', // Default primary blue
-      '--button-primary-bg': '#3498db',
-      '--button-primary-border': '#3498db',
-      '--button-primary-hover-bg': '#2980b9',
-      '--button-primary-hover-border': '#2980b9',
-      '--navbar-link-hover-color': '#3498db',
-      '--stat-card-decoration-bg': 'rgba(52, 152, 219, 0.1)'
-    }
-  };
+  private currentAppliedColor: string | null = null;
+  private readonly DEFAULT_THEME_COLOR = '#2c3e50'; // Default fallback color
 
   constructor(private authService: AuthService) {
-    // Subscribe to currentUser changes to apply theme initially or when user logs in/out
     this.authService.currentUser$.subscribe(user => {
-      if (user && user.preferredTheme && this.themes[user.preferredTheme]) {
-        this.applyTheme(user.preferredTheme);
-      } else if (user && user.role && this.themes[user.role]) {
-        this.applyTheme(user.role); // Apply role-based theme
-      } else {
-        this.applyTheme('DEFAULT'); // Fallback for no user or no preferred/role theme
-      }
+      this.applyUserTheme(user);
     });
   }
 
-  // Called by SuperAdmin to select and "save" a theme
-  setTheme(themeName: string): void {
+  private applyUserTheme(user: User | null): void {
+    const themeColor = user?.preferredTheme || this.DEFAULT_THEME_COLOR;
+    this.applyColorToCssVariables(themeColor);
+  }
+
+  // Called by UI components (e.g., Super Admin theme selector)
+  public setTheme(themeColor: string): void {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
-      // Update user object in AuthService (simulates backend update)
-      this.authService.updateCurrentUserProfile({ preferredTheme: themeName });
-      // AuthService's currentUser$ will emit, and the subscription in constructor will apply it.
-      // Or, apply directly if immediate visual feedback is desired before observable kicks in:
-      this.applyTheme(themeName);
-    } else {
-      // If no user, perhaps apply as a temporary session theme (not persisted to user)
-      // For now, we only allow theme changes for logged-in users by SuperAdmin.
-      this.applyTheme(themeName); // Apply visually but won't be "saved" to a user object
-    }
-  }
-
-  // Applies the theme to the document
-  private applyTheme(themeName: string): void {
-    if (this.currentTheme === themeName) {
-      return;
-    }
-
-    const theme = this.themes[themeName] || this.themes['DEFAULT'];
-    Object.keys(theme).forEach(key => {
-      document.documentElement.style.setProperty(key, theme[key]);
-    });
-    this.currentTheme = themeName;
-    console.log(`Theme applied: ${themeName}`);
-  }
-
-  // Clears any applied theme and reverts to default (e.g., on logout)
-  clearTheme(): void {
-    // Remove specific theme properties
-    const themeToClear = this.themes[this.currentTheme] || this.themes['DEFAULT'];
-    Object.keys(themeToClear).forEach(key => {
-        if (key.startsWith('--')) { // Ensure we only remove CSS variables we set
-            document.documentElement.style.removeProperty(key);
+      this.authService.updateCurrentUserProfile({ preferredTheme: themeColor }).subscribe({
+        next: () => {
+          // The currentUser$ subscription in constructor will handle applying the theme
+          // once the user object is updated.
+          // For immediate visual feedback, can also call applyColorToCssVariables here:
+          // this.applyColorToCssVariables(themeColor);
+          console.log('Theme preference update sent to AuthService.');
+        },
+        error: (err) => {
+          console.error('Failed to save theme preference', err);
+          // Optionally revert UI or show error to user
         }
-    });
-    this.currentTheme = ''; // Reset current theme tracking
-    // Optionally, re-apply the actual default theme values if clearing means "go to default"
-    // this.applyTheme('DEFAULT');
-    console.log('Theme cleared. Default CSS will take over or apply explicit default.');
+      });
+    } else {
+      // For non-logged-in users, or if theme change is allowed without saving to profile
+      this.applyColorToCssVariables(themeColor);
+    }
   }
 
-   // This method is called by AppComponent when auth state changes
-   public applyThemeForAuthenticatedUser(): void {
-    const user = this.authService.getCurrentUser();
-    if (user && user.preferredTheme && this.themes[user.preferredTheme]) {
-      this.applyTheme(user.preferredTheme);
-    } else if (user && user.role && this.themes[user.role]) {
-      this.applyTheme(user.role);
-    } else {
-      this.applyTheme('DEFAULT');
+  private applyColorToCssVariables(color: string | null | undefined): void {
+    const validColor = color || this.DEFAULT_THEME_COLOR;
+
+    if (this.currentAppliedColor === validColor) {
+      return; // Avoid redundant CSS updates
     }
+
+    // Define which CSS variables are affected by this single color
+    // More sophisticated logic can be added here to derive related colors (e.g., darker/lighter shades)
+    document.documentElement.style.setProperty('--sidebar-bg', validColor);
+    document.documentElement.style.setProperty('--sidebar-link-active-bg', this.adjustColor(validColor, -20)); // Example: darker shade
+    document.documentElement.style.setProperty('--button-primary-bg', validColor);
+    document.documentElement.style.setProperty('--button-primary-border', validColor);
+    document.documentElement.style.setProperty('--button-primary-hover-bg', this.adjustColor(validColor, -20));
+    document.documentElement.style.setProperty('--button-primary-hover-border', this.adjustColor(validColor, -20));
+    document.documentElement.style.setProperty('--navbar-link-hover-color', validColor);
+    // For stat card decoration, use the color with some opacity
+    const [r, g, b] = this.hexToRgb(validColor);
+    document.documentElement.style.setProperty('--stat-card-decoration-bg', `rgba(${r}, ${g}, ${b}, 0.1)`);
+
+    this.currentAppliedColor = validColor;
+    console.log(`Theme color applied: ${validColor}`);
+  }
+
+  // Called by AppComponent on logout or when user becomes unauthenticated
+  public applyDefaultTheme(): void {
+    this.applyColorToCssVariables(this.DEFAULT_THEME_COLOR);
+  }
+
+
+  // Helper function to darken/lighten a hex color
+  // Basic version, for more advanced needs, a library might be better
+  private adjustColor(color: string, amount: number): string {
+    let usePound = false;
+    if (color[0] === '#') {
+      color = color.slice(1);
+      usePound = true;
+    }
+    const num = parseInt(color, 16);
+    let r = (num >> 16) + amount;
+    if (r > 255) r = 255;
+    else if (r < 0) r = 0;
+    let b = ((num >> 8) & 0x00FF) + amount;
+    if (b > 255) b = 255;
+    else if (b < 0) b = 0;
+    let g = (num & 0x0000FF) + amount;
+    if (g > 255) g = 255;
+    else if (g < 0) g = 0;
+    return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+  }
+
+  private hexToRgb(hex: string): [number, number, number] {
+    let r = 0, g = 0, b = 0;
+    // 3 digits
+    if (hex.length === 4) {
+      r = parseInt(hex[1] + hex[1], 16);
+      g = parseInt(hex[2] + hex[2], 16);
+      b = parseInt(hex[3] + hex[3], 16);
+    }
+    // 6 digits
+    else if (hex.length === 7) {
+      r = parseInt(hex.slice(1, 3), 16);
+      g = parseInt(hex.slice(3, 5), 16);
+      b = parseInt(hex.slice(5, 7), 16);
+    }
+    return [r, g, b];
   }
 }

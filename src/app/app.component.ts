@@ -19,21 +19,21 @@ export class AppComponent implements OnInit {
     // ThemeService constructor now handles initial theme load by subscribing to currentUser$
     // So, explicit call here on init might be redundant if currentUser$ emits synchronously
     // or if initial state is handled well by the service's subscription.
-    // However, keeping a call tied to `isAuthenticated` can be a safeguard.
-    if (this.authService.isAuthenticated()) {
-      this.themeService.applyThemeForAuthenticatedUser();
-    } else {
-      this.themeService.applyTheme('DEFAULT'); // Ensure default for logged-out state
+    // ThemeService constructor subscribes to currentUser$ for initial load and login.
+    if (!this.authService.isAuthenticated()) {
+      this.themeService.applyDefaultTheme(); // Ensure default for initially logged-out state
     }
 
     // Subscribe to login/logout events to change theme dynamically
     this.authService.authenticationChanged.subscribe((isAuthenticated) => {
       if (isAuthenticated) {
-        this.themeService.applyThemeForAuthenticatedUser();
+        // Theme is applied via ThemeService's subscription to currentUser$
+        // No explicit call needed here as currentUser$ will emit.
+        // this.themeService.applyThemeForAuthenticatedUser(); // This would be redundant
       } else {
         // On logout, ThemeService's currentUser$ subscription will receive null
-        // and apply 'DEFAULT'. We can also be explicit here.
-        this.themeService.applyTheme('DEFAULT');
+        // and apply default. Explicitly calling applyDefaultTheme ensures it.
+        this.themeService.applyDefaultTheme();
       }
     });
   }

@@ -82,8 +82,15 @@ export class LoginComponent implements OnInit {
       case 'TEACHER':
         this.router.navigate(['/dashboard/teacher']);
         break;
+      case 'STUDENT':
+        this.router.navigate(['/dashboard/student']);
+        break;
       default:
+        // If role is unknown or not handled, navigate to a generic dashboard or unauthorized page
+        // For now, redirecting to login as a fallback if no specific role match.
+        this.authService.logout(); // Clear any partial auth state
         this.router.navigate(['/login']);
+        break;
     }
   }
-} 
+}

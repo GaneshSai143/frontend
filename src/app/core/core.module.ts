@@ -14,8 +14,8 @@ import { AuthService } from './services/auth.service';
   ],
   providers: [
     AuthService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    // Removed redundant AuthInterceptor
   ]
 })
 export class CoreModule {
