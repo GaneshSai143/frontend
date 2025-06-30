@@ -57,8 +57,8 @@
         border-color: var(--color-success, #2ecc71);
         color: var(--button-primary-text, #fff);
          &:hover, &:focus {
-            background-color: color-mix(in srgb, var(--color-success, #2ecc71) 93%, black 7%);
-            border-color: color-mix(in srgb, var(--color-success, #2ecc71) 93%, black 7%);
+            background-color: darken(var(--color-success, #2ecc71), 7%);
+            border-color: darken(var(--color-success, #2ecc71), 7%);
          }
     }
      &.btn-info {
@@ -66,8 +66,8 @@
         border-color: var(--color-info, #5dade2);
         color: var(--button-primary-text, #fff);
          &:hover, &:focus {
-            background-color: color-mix(in srgb, var(--color-info, #5dade2) 93%, black 7%);
-            border-color: color-mix(in srgb, var(--color-info, #5dade2) 93%, black 7%);
+            background-color: darken(var(--color-info, #5dade2), 7%);
+            border-color: darken(var(--color-info, #5dade2), 7%);
          }
     }
      &.btn-warning {
@@ -75,8 +75,8 @@
         border-color: var(--color-warning, #f1c40f);
         color: var(--text-color-strong, #2c3e50); // Darker text for light warning
          &:hover, &:focus {
-            background-color: color-mix(in srgb, var(--color-warning, #f1c40f) 93%, black 7%);
-            border-color: color-mix(in srgb, var(--color-warning, #f1c40f) 93%, black 7%);
+            background-color: darken(var(--color-warning, #f1c40f), 7%);
+            border-color: darken(var(--color-warning, #f1c40f), 7%);
          }
     }
   }

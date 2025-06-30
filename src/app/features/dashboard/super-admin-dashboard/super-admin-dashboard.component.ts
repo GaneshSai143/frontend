@@ -5,7 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { BaseDashboardComponent } from '../base-dashboard.component';
 import { ThemeService } from '../../../core/services/theme.service';
-import { SuperAdminDataService, School, User } from '../../../core/services/super-admin-data.service';
+import { SuperAdminDataService, School, User, SuperAdminDashboardStats } from '../../../core/services/super-admin-data.service'; // Added SuperAdminDashboardStats
 import { SnackbarService } from '../../../core/services/snackbar.service';
 
 declare var bootstrap: any; // For Bootstrap Modals

@@ -8,6 +8,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 @NgModule({
   declarations: [
+    LoginComponent,
     UnauthorizedComponent
   ],
   imports: [

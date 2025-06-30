@@ -7,7 +7,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './features/auth/login/login.component';
-import { AuthInterceptor } from './core/interceptors/auth.interceptor';
+// Removed AuthInterceptor import as it's deleted and JwtInterceptor is used via CoreModule
+
+// Import CoreModule to provide JwtInterceptor and other core services
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -19,14 +22,11 @@ import { AuthInterceptor } from './core/interceptors/auth.interceptor';
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    CoreModule // Add CoreModule here
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
-      multi: true
-    }
+    // JwtInterceptor is now provided in CoreModule
   ],
   bootstrap: [AppComponent]
 })
