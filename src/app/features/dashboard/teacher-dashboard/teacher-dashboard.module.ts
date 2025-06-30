@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Import CommonModule
 import { RouterModule, Routes } from '@angular/router';
 import { TeacherDashboardComponent } from './teacher-dashboard.component';
 // import { TeacherDashboardComponent } from './teacher-dashboard.component';
@@ -9,6 +10,9 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [TeacherDashboardComponent],
-  imports: [RouterModule.forChild(routes)]
+  imports: [
+    CommonModule, // Add CommonModule here
+    RouterModule.forChild(routes)
+  ]
 })
-export class TeacherDashboardModule { } 
+export class TeacherDashboardModule { }

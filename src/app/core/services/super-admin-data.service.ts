@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { map, tap, catchError, delay } from 'rxjs/operators';
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs'; // Removed BehaviorSubject, of
+import { catchError } from 'rxjs/operators'; // Removed map, tap, delay
 import { environment } from '../../../environments/environment';
 
 // Interface for the Super Admin Dashboard API response
@@ -27,10 +22,16 @@ export interface SuperAdminDashboardStats {
 
 // Re-defining minimal User and School if needed by other parts or for type safety,
 // ideally these would be consolidated from core/models.
-export interface School {
+export interface School { // Restoring fields based on original schools.json and component usage
   id: string;
   name: string;
-  // ... other properties if needed for display elsewhere
+  principalId: string;
+  address: string;
+  email: string;
+  phone: string;
+  establishedDate: string;
+  studentCount?: number; // Made optional as they might not always be present or editable
+  teacherCount?: number; // Made optional
 }
 
 export interface User {
