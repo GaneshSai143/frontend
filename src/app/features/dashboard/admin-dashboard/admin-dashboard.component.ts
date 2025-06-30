@@ -12,7 +12,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
 })
 export class AdminDashboardComponent extends BaseDashboardComponent {
   dashboardData: AdminDashboardData | null = null;
-  isLoading = true;
+  isLoading = false; // Initialize to false as no data will be loaded
 
   constructor(
     protected override authService: AuthService,
@@ -27,27 +27,27 @@ export class AdminDashboardComponent extends BaseDashboardComponent {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.loadDashboardData();
+    // this.loadDashboardData(); // Call removed as API endpoint does not exist
   }
 
-  loadDashboardData(): void {
-    this.isLoading = true;
-    this.adminDataService.getAdminDashboardData().subscribe({
-      next: (data) => {
-        this.dashboardData = data;
-        this.isLoading = false;
-        // TODO: Update stat cards and other sections based on this.dashboardData
-        // For now, the Overview tab's stat cards are static in HTML.
-        // We can update them if this.dashboardData contains those specific metrics.
-        // Example: this.totalTeachers = data.totalTeachersCount || 0;
-      },
-      error: (err) => {
-        this.snackbarService.show('Failed to load admin dashboard data.', 'error');
-        this.isLoading = false;
-        console.error(err);
-      }
-    });
-  }
+  // loadDashboardData(): void {
+  //   this.isLoading = true;
+  //   this.adminDataService.getAdminDashboardData().subscribe({
+  //     next: (data) => {
+  //       this.dashboardData = data;
+  //       this.isLoading = false;
+  //       // TODO: Update stat cards and other sections based on this.dashboardData
+  //       // For now, the Overview tab's stat cards are static in HTML.
+  //       // We can update them if this.dashboardData contains those specific metrics.
+  //       // Example: this.totalTeachers = data.totalTeachersCount || 0;
+  //     },
+  //     error: (err) => {
+  //       this.snackbarService.show('Failed to load admin dashboard data.', 'error');
+  //       this.isLoading = false;
+  //       console.error(err);
+  //     }
+  //   });
+  // }
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'ADMIN';

@@ -21,12 +21,12 @@ export class StudentDataService {
 
   constructor(private http: HttpClient) { }
 
-  getStudentDashboardData(): Observable<StudentDashboardData> {
-    return this.http.get<StudentDashboardData>(`${this.apiUrl}/dashboard/student`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+  // getStudentDashboardData(): Observable<StudentDashboardData> {
+  //   return this.http.get<StudentDashboardData>(`${this.apiUrl}/dashboard/student`)
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   private handleError(error: any): Observable<never> {
     console.error('An API error occurred in StudentDataService:', error);

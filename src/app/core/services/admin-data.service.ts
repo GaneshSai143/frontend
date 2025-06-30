@@ -22,12 +22,12 @@ export class AdminDataService {
 
   constructor(private http: HttpClient) { }
 
-  getAdminDashboardData(): Observable<AdminDashboardData> {
-    return this.http.get<AdminDashboardData>(`${this.apiUrl}/dashboard/admin`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+  // getAdminDashboardData(): Observable<AdminDashboardData> {
+  //   return this.http.get<AdminDashboardData>(`${this.apiUrl}/dashboard/admin`)
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   private handleError(error: any): Observable<never> {
     console.error('An API error occurred in AdminDataService:', error);
