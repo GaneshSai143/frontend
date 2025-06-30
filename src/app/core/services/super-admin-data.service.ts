@@ -55,12 +55,8 @@ export class SuperAdminDataService {
 
   constructor(private http: HttpClient) {}
 
-  getSuperAdminDashboardStats(): Observable<SuperAdminDashboardStats> {
-    return this.http.get<SuperAdminDashboardStats>(`${this.apiUrl}/dashboard/super-admin`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+  // Method getSuperAdminDashboardStats() removed as /api/v1/dashboard/super-admin does not exist.
+  // Overview stats on the dashboard will need to be static or from component-level mock data for now.
 
   // Placeholder for fetching data for Manage Schools/Principals/Students tabs
   // These would call different APIs (e.g., /api/v1/schools, /api/v1/users?role=ADMIN, etc.)

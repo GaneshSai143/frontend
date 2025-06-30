@@ -12,7 +12,7 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
 })
 export class StudentDashboardComponent extends BaseDashboardComponent {
   dashboardData: StudentDashboardData | null = null;
-  isLoading = true;
+  isLoading = false; // Initialize to false
 
   constructor(
     protected override authService: AuthService,
@@ -27,24 +27,24 @@ export class StudentDashboardComponent extends BaseDashboardComponent {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.loadDashboardData();
+    // this.loadDashboardData(); // Call removed as API endpoint does not exist
   }
 
-  loadDashboardData(): void {
-    this.isLoading = true;
-    this.studentDataService.getStudentDashboardData().subscribe({
-      next: (data) => {
-        this.dashboardData = data;
-        this.isLoading = false;
-        // TODO: Update UI elements based on this.dashboardData
-      },
-      error: (err) => {
-        this.snackbarService.show('Failed to load student dashboard data.', 'error');
-        this.isLoading = false;
-        console.error(err);
-      }
-    });
-  }
+  // loadDashboardData(): void {
+  //   this.isLoading = true;
+  //   this.studentDataService.getStudentDashboardData().subscribe({
+  //     next: (data) => {
+  //       this.dashboardData = data;
+  //       this.isLoading = false;
+  //       // TODO: Update UI elements based on this.dashboardData
+  //     },
+  //     error: (err) => {
+  //       this.snackbarService.show('Failed to load student dashboard data.', 'error');
+  //       this.isLoading = false;
+  //       console.error(err);
+  //     }
+  //   });
+  // }
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'STUDENT';

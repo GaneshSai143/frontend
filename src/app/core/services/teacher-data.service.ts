@@ -21,12 +21,12 @@ export class TeacherDataService {
 
   constructor(private http: HttpClient) { }
 
-  getTeacherDashboardData(): Observable<TeacherDashboardData> {
-    return this.http.get<TeacherDashboardData>(`${this.apiUrl}/dashboard/teacher`)
-      .pipe(
-        catchError(this.handleError)
-      );
-  }
+  // getTeacherDashboardData(): Observable<TeacherDashboardData> {
+  //   return this.http.get<TeacherDashboardData>(`${this.apiUrl}/dashboard/teacher`)
+  //     .pipe(
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   private handleError(error: any): Observable<never> {
     console.error('An API error occurred in TeacherDataService:', error);

@@ -94,35 +94,34 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     this.initializeTabs();
   }
 
-  loadSuperAdminDashboardData(): void {
-    this.superAdminDataService.getSuperAdminDashboardStats().subscribe({
-      next: (stats) => {
-        this.dashboardOverviewStats = stats;
-        // Update stats for the "Reports/Statistics" tab as well, if they are the same source
-        this.reportTabTotalSchools = stats.totalSchools;
-        this.reportTabTotalPrincipals = stats.totalPrincipals;
-        this.reportTabTotalTeachers = stats.totalTeachers;
-        this.reportTabTotalStudents = stats.totalStudents;
-        this.reportTabTotalActiveUsers = stats.activeUsers || 0;
+  // loadSuperAdminDashboardData(): void {
+  //   this.superAdminDataService.getSuperAdminDashboardStats().subscribe({
+  //     next: (stats) => {
+  //       this.dashboardOverviewStats = stats;
+  //       // Update stats for the "Reports/Statistics" tab as well, if they are the same source
+  //       this.reportTabTotalSchools = stats.totalSchools;
+  //       this.reportTabTotalPrincipals = stats.totalPrincipals;
+  //       this.reportTabTotalTeachers = stats.totalTeachers;
+  //       this.reportTabTotalStudents = stats.totalStudents;
+  //       this.reportTabTotalActiveUsers = stats.activeUsers || 0;
 
-        // The "Manage Schools/Principals/Students" tabs will NOT be populated by this call.
-        // Their data lists (this.schools, this.principals, this.students) will remain empty
-        // unless separate API calls are implemented for them.
-        // For now, ensure they are empty to reflect no data is loaded for those tables.
-        this.schools = [];
-        this.principals = [];
-        this.students = [];
-        this.allSchoolsForFilter = [{ id: '', name: 'All Schools', principalId: '', address: '', email: '', phone: '', establishedDate: '', studentCount: 0, teacherCount: 0 }];
+  //       // The "Manage Schools/Principals/Students" tabs will NOT be populated by this call.
+  //       // Their data lists (this.schools, this.principals, this.students) will remain empty
+  //       // unless separate API calls are implemented for them.
+  //       // For now, ensure they are empty to reflect no data is loaded for those tables.
+  //       this.schools = [];
+  //       this.principals = [];
+  //       this.students = [];
+  //       this.allSchoolsForFilter = [{ id: '', name: 'All Schools', principalId: '', address: '', email: '', phone: '', establishedDate: '', studentCount: 0, teacherCount: 0 }];
 
-
-        console.log('Super Admin Dashboard Stats Loaded:', this.dashboardOverviewStats);
-      },
-      error: (err) => {
-        this.snackbarService.show('Failed to load dashboard data.', 'error');
-        console.error(err);
-      }
-    });
-  }
+  //       console.log('Super Admin Dashboard Stats Loaded:', this.dashboardOverviewStats);
+  //     },
+  //     error: (err) => {
+  //       this.snackbarService.show('Failed to load dashboard data.', 'error');
+  //       console.error(err);
+  //     }
+  //   });
+  // }
 
   initializeTabs(): void {
     ['overview', 'manage-schools', 'manage-principals', 'view-students', 'reports-stats'].forEach(tabId => {
