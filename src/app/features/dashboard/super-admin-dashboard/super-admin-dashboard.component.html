@@ -130,10 +130,9 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Schools</h6>
-                    <h2 class="card-title mb-0">{{ totalSchools }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalSchools || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
-                      <!-- Trend percentage can be dynamic later if needed -->
                       <span>&nbsp;</span>
                     </div>
                     </div>
@@ -143,7 +142,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Principals</h6>
-                    <h2 class="card-title mb-0">{{ totalPrincipals }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -155,7 +154,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Teachers</h6>
-                    <h2 class="card-title mb-0">{{ totalTeachers }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalTeachers || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -167,7 +166,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
-                    <h2 class="card-title mb-0">{{ totalStudents }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalStudents || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -234,48 +233,19 @@
           <div class="tab-pane fade" id="manage-schools" role="tabpanel" aria-labelledby="manage-schools-tab">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h3>Manage Schools</h3>
-              <button class="btn btn-primary" (click)="openSchoolModal()">
+              <!-- <button class="btn btn-primary" (click)="openSchoolModal()">
                 <i class="bi bi-plus-circle"></i> Add New School
-              </button>
+              </button> -->
+              <p class="text-muted">School management API (for list & CRUD) not yet specified.</p>
             </div>
-
-            <div class="table-responsive">
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Principal ID</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Established</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let school of schools">
-                    <td>{{ school.name }}</td>
-                    <td>{{ school.principalId }}</td> <!-- TODO: Display Principal Name -->
-                    <td>{{ school.email }}</td>
-                    <td>{{ school.phone }}</td>
-                    <td>{{ school.establishedDate | date:'yyyy-MM-dd' }}</td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary me-2" (click)="openSchoolModal(school)">
-                        <i class="bi bi-pencil-square"></i> Edit
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteSchool(school)">
-                        <i class="bi bi-trash"></i> Delete
-                      </button>
-                    </td>
-                  </tr>
-                  <tr *ngIf="!schools || schools.length === 0">
-                    <td colspan="6" class="text-center">No schools found.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <p class="text-center">School list and management tools will be available here once the respective APIs are integrated.</p>
+            <!-- Existing table structure and modal can be uncommented when APIs are ready -->
+            <!--
+            <div class="table-responsive"> ... </div>
+            -->
           </div>
 
-          <!-- School Form Modal -->
+          <!-- School Form Modal (kept for future use but not functional without list/data) -->
           <div class="modal fade" id="schoolFormModal" tabindex="-1" aria-labelledby="schoolFormModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
@@ -355,52 +325,16 @@
           <div class="tab-pane fade" id="manage-principals" role="tabpanel" aria-labelledby="manage-principals-tab">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <h3>Manage Principals</h3>
-              <button class="btn btn-primary" (click)="openPrincipalModal()">
+              <!-- <button class="btn btn-primary" (click)="openPrincipalModal()">
                 <i class="bi bi-person-plus"></i> Add New Principal
-              </button>
+              </button> -->
+              <p class="text-muted">Principal management API (for list & CRUD) not yet specified.</p>
             </div>
-
-            <div class="table-responsive">
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Username</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>School ID</th> <!-- TODO: Display School Name -->
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let principal of principals">
-                    <td>{{ principal.username }}</td>
-                    <td>{{ principal.firstName }} {{ principal.lastName }}</td>
-                    <td>{{ principal.email }}</td>
-                    <td>{{ principal.schoolId || 'N/A' }}</td>
-                    <td>
-                      <span class="badge" [ngClass]="principal.isActive ? 'bg-success' : 'bg-secondary'">
-                        {{ principal.isActive ? 'Active' : 'Inactive' }}
-                      </span>
-                    </td>
-                    <td>
-                      <button class="btn btn-sm btn-outline-primary me-2" (click)="openPrincipalModal(principal)">
-                        <i class="bi bi-pencil-square"></i> Edit
-                      </button>
-                      <button class="btn btn-sm btn-outline-danger" (click)="confirmDeletePrincipal(principal)">
-                        <i class="bi bi-trash"></i> Delete
-                      </button>
-                    </td>
-                  </tr>
-                  <tr *ngIf="!principals || principals.length === 0">
-                    <td colspan="6" class="text-center">No principals found.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <p class="text-center">Principal list and management tools will be available here once the respective APIs are integrated.</p>
+             <!-- Existing table structure and modal can be uncommented when APIs are ready -->
           </div>
 
-          <!-- Principal Form Modal -->
+          <!-- Principal Form Modal (kept for future use but not functional without list/data) -->
           <div class="modal fade" id="principalFormModal" tabindex="-1" aria-labelledby="principalFormModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
@@ -481,68 +415,23 @@
 
           <!-- View Students Tab -->
           <div class="tab-pane fade" id="view-students" role="tabpanel" aria-labelledby="view-students-tab">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h3>View Students</h3>
-              <div class="col-md-4">
-                <select class="form-select" (change)="filterStudentsBySchool($event)" [(ngModel)]="selectedSchoolFilter">
-                    <option [ngValue]="null">All Schools</option>
-                    <option *ngFor="let school of allSchoolsForFilter.slice(1)" [value]="school.id">{{ school.name }}</option>
-                    <!-- Sliced allSchoolsForFilter to exclude the "All Schools" placeholder from iteration if it was added with an empty id -->
-                </select>
-              </div>
+             <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>View Students</h3>
+                <p class="text-muted">Student list API not yet specified.</p>
             </div>
-
-            <div class="table-responsive">
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th>Username</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>School ID</th> <!-- TODO: Display School Name -->
-                    <th>Grade</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let student of students">
-                    <td>{{ student.username }}</td>
-                    <td>{{ student.firstName }} {{ student.lastName }}</td>
-                    <td>{{ student.email }}</td>
-                    <td>{{ student.schoolId || 'N/A' }}</td>
-                    <td>{{ student.grade || 'N/A' }}</td>
-                    <td>
-                      <span class="badge" [ngClass]="student.isActive ? 'bg-success' : 'bg-secondary'">
-                        {{ student.isActive ? 'Active' : 'Inactive' }}
-                      </span>
-                    </td>
-                    <td>
-                      <!-- <button class="btn btn-sm btn-outline-primary me-2" (click)="openEditStudentModal(student)">
-                        <i class="bi bi-pencil-square"></i> Edit
-                      </button> -->
-                      <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteStudent(student)">
-                        <i class="bi bi-trash"></i> Delete
-                      </button>
-                    </td>
-                  </tr>
-                  <tr *ngIf="!students || students.length === 0">
-                    <td colspan="7" class="text-center">No students found for the selected filter.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <p class="text-center">Student list and filtering tools will be available here once the respective APIs are integrated.</p>
+            <!-- Existing table structure can be uncommented when APIs are ready -->
           </div>
 
           <!-- Reports/Statistics Tab -->
           <div class="tab-pane fade" id="reports-stats" role="tabpanel" aria-labelledby="reports-stats-tab">
-            <h3>System Statistics</h3>
+            <h3>System Statistics (from Overview API)</h3>
             <div class="row mt-3 g-4">
               <div class="col-md-4">
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Schools</h5>
-                    <p class="card-text fs-2">{{ totalSchools }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalSchools || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -550,7 +439,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Principals</h5>
-                    <p class="card-text fs-2">{{ totalPrincipals }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -558,7 +447,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Teachers</h5>
-                    <p class="card-text fs-2">{{ totalTeachers }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalTeachers || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -566,7 +455,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Students</h5>
-                    <p class="card-text fs-2">{{ totalStudents }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalStudents || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -574,7 +463,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Active Users</h5>
-                    <p class="card-text fs-2">{{ totalActiveUsers }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.activeUsers || 0 }}</p>
                   </div>
                 </div>
               </div>

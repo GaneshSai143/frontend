@@ -37,12 +37,18 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   selectedSchoolFilter: string | null = null;
   // No separate modal for students in SuperAdmin view for now, assuming view/delete primarily. Edit might navigate elsewhere or be a simpler modal.
 
-  // Stats
-  totalSchools = 0;
-  totalPrincipals = 0;
-  totalTeachers = 0;
-  totalStudents = 0;
-  totalActiveUsers = 0;
+  // Stats for Overview - will be populated from API
+  dashboardOverviewStats: SuperAdminDashboardStats | null = null;
+
+  // These properties will be used for the "Reports/Statistics" tab,
+  // and will be derived from the lists fetched for management tabs if those APIs are implemented.
+  // For now, they will remain 0 or be populated by the overview stats if structure matches.
+  reportTabTotalSchools = 0;
+  reportTabTotalPrincipals = 0;
+  reportTabTotalTeachers = 0;
+  reportTabTotalStudents = 0;
+  reportTabTotalActiveUsers = 0;
+
 
   recentActivities: any[] = [
     { icon: 'bi-building', type: 'primary', title: 'New School Added', description: 'Greenwood High was added to the system.', time: '2 hours ago' },
@@ -70,12 +76,13 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
 
   override ngOnInit(): void {
     super.ngOnInit(); // Call base ngOnInit
-    this.initSchoolForm();
-    this.loadSchools(); // This also populates allSchoolsForFilter via subscription
-    this.initPrincipalForm();
-    this.loadPrincipals();
-    this.loadStudents(); // Initial load for all students
+    this.loadSuperAdminDashboardData();
 
+    // Initialize forms for modals (they are not populated with data initially)
+    this.initSchoolForm();
+    this.initPrincipalForm();
+
+    // Initialize Modals
     const schoolModalElement = document.getElementById('schoolFormModal');
     if (schoolModalElement) {
       this.schoolModal = new bootstrap.Modal(schoolModalElement);
@@ -85,6 +92,36 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
       this.principalModal = new bootstrap.Modal(principalModalElement);
     }
     this.initializeTabs();
+  }
+
+  loadSuperAdminDashboardData(): void {
+    this.superAdminDataService.getSuperAdminDashboardStats().subscribe({
+      next: (stats) => {
+        this.dashboardOverviewStats = stats;
+        // Update stats for the "Reports/Statistics" tab as well, if they are the same source
+        this.reportTabTotalSchools = stats.totalSchools;
+        this.reportTabTotalPrincipals = stats.totalPrincipals;
+        this.reportTabTotalTeachers = stats.totalTeachers;
+        this.reportTabTotalStudents = stats.totalStudents;
+        this.reportTabTotalActiveUsers = stats.activeUsers || 0;
+
+        // The "Manage Schools/Principals/Students" tabs will NOT be populated by this call.
+        // Their data lists (this.schools, this.principals, this.students) will remain empty
+        // unless separate API calls are implemented for them.
+        // For now, ensure they are empty to reflect no data is loaded for those tables.
+        this.schools = [];
+        this.principals = [];
+        this.students = [];
+        this.allSchoolsForFilter = [{ id: '', name: 'All Schools', principalId: '', address: '', email: '', phone: '', establishedDate: '', studentCount: 0, teacherCount: 0 }];
+
+
+        console.log('Super Admin Dashboard Stats Loaded:', this.dashboardOverviewStats);
+      },
+      error: (err) => {
+        this.snackbarService.show('Failed to load dashboard data.', 'error');
+        console.error(err);
+      }
+    });
   }
 
   initializeTabs(): void {
@@ -113,246 +150,53 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
 
   override ngOnDestroy(): void {
     super.ngOnDestroy(); // Call base ngOnDestroy
-    if (this.schoolsSubscription) {
-      this.schoolsSubscription.unsubscribe();
-    }
-    if (this.principalsSubscription) {
-      this.principalsSubscription.unsubscribe();
-    }
-    if (this.studentsSubscription) {
-      this.studentsSubscription.unsubscribe();
-    }
+    // Unsubscribe from any direct subscriptions if they were re-added for list data
+    if (this.schoolsSubscription) this.schoolsSubscription.unsubscribe();
+    if (this.principalsSubscription) this.principalsSubscription.unsubscribe();
+    if (this.studentsSubscription) this.studentsSubscription.unsubscribe();
   }
 
-  // --- School Management ---
+  // --- School Management (Placeholder - No API for list/CRUD yet) ---
   initSchoolForm(school?: School): void {
     this.schoolForm = this.fb.group({
       id: [school?.id || null],
       name: [school?.name || '', Validators.required],
-      principalId: [school?.principalId || '', Validators.required], // TODO: Populate with actual principals
-      address: [school?.address || '', Validators.required],
-      email: [school?.email || '', [Validators.required, Validators.email]],
-      phone: [school?.phone || '', Validators.required],
-      establishedDate: [school?.establishedDate ? new Date(school.establishedDate).toISOString().split('T')[0] : '', Validators.required]
+      // ... other fields ...
+      principalId: [''], address: [''], email: [''], phone: [''], establishedDate: ['']
     });
   }
+  openSchoolModal(school: School | null = null): void { this.snackbarService.show('School management API not yet implemented.', 'info'); }
+  closeSchoolModal(): void { this.schoolModal?.hide(); }
+  submitSchoolForm(): void { this.snackbarService.show('School submission API not yet implemented.', 'info');}
+  confirmDeleteSchool(school: School): void {this.snackbarService.show('School deletion API not yet implemented.', 'info');}
+  // deleteSchool(schoolId: string): void { /* API call */ }
 
-  loadSchools(): void {
-    this.schoolsSubscription = this.superAdminDataService.getSchools().subscribe(schools => {
-      this.schools = schools;
-      this.allSchoolsForFilter = [{ id: '', name: 'All Schools', principalId: '', address: '', email: '', phone: '', establishedDate: '', studentCount: 0, teacherCount: 0 }, ...schools]; // Add "All" option
-      this.totalSchools = schools.length;
-      this.updateOverviewStats(); // Update stats that depend on schools
-    });
-  }
 
-  openSchoolModal(school: School | null = null): void {
-    this.editingSchool = school;
-    this.initSchoolForm(school || undefined);
-    this.schoolModal?.show();
-  }
-
-  closeSchoolModal(): void {
-    this.schoolModal?.hide();
-    this.editingSchool = null;
-    this.schoolForm.reset();
-  }
-
-  submitSchoolForm(): void {
-    if (this.schoolForm.invalid) {
-      this.snackbarService.show('Please fill all required fields correctly.', 'error');
-      return;
-    }
-
-    const formValues = this.schoolForm.value;
-    if (this.editingSchool && this.editingSchool.id) { // Editing existing school
-      const updatedSchool: School = {
-        ...this.editingSchool,
-        ...formValues,
-        // studentCount and teacherCount are not editable in this form, keep existing
-      };
-      this.superAdminDataService.updateSchool(updatedSchool).subscribe({
-        next: () => {
-          this.snackbarService.show('School updated successfully!', 'success');
-          this.closeSchoolModal();
-          // No need to call loadSchools() as BehaviorSubject in service will update the list
-        },
-        error: (err) => this.snackbarService.show(`Error updating school: ${err.message}`, 'error')
-      });
-    } else { // Adding new school
-      // Omit id, studentCount, teacherCount as they are set by service or default
-      const { id, studentCount, teacherCount, ...newSchoolData } = formValues;
-      this.superAdminDataService.addSchool(newSchoolData).subscribe({
-        next: () => {
-          this.snackbarService.show('School added successfully!', 'success');
-          this.closeSchoolModal();
-        },
-        error: (err) => this.snackbarService.show(`Error adding school: ${err.message}`, 'error')
-      });
-    }
-  }
-
-  confirmDeleteSchool(school: School): void {
-    if (confirm(`Are you sure you want to delete ${school.name}? This action cannot be undone.`)) {
-      this.deleteSchool(school.id);
-    }
-  }
-
-  deleteSchool(schoolId: string): void {
-    this.superAdminDataService.deleteSchool(schoolId).subscribe({
-      next: () => {
-        this.snackbarService.show('School deleted successfully!', 'success');
-      },
-      error: (err) => this.snackbarService.show(`Error deleting school: ${err.message}`, 'error')
-    });
-  }
-
-  // --- Principal (Admin User) Management ---
+  // --- Principal (Admin User) Management (Placeholder - No API for list/CRUD yet) ---
   initPrincipalForm(principal?: User): void {
     this.principalForm = this.fb.group({
       id: [principal?.id || null],
       username: [principal?.username || '', Validators.required],
-      firstName: [principal?.firstName || '', Validators.required],
-      lastName: [principal?.lastName || '', Validators.required],
-      email: [principal?.email || '', [Validators.required, Validators.email]],
-      schoolId: [principal?.schoolId || null, Validators.required], // TODO: Populate with schools
-      isActive: [principal?.isActive === undefined ? true : principal.isActive, Validators.required]
-      // Role is fixed as 'ADMIN' for principals when adding/editing through this form
+      // ... other fields ...
+      firstName: [''], lastName: [''], email: [''], schoolId: [null], isActive: [true]
     });
   }
+  openPrincipalModal(principal: User | null = null): void { this.snackbarService.show('Principal management API not yet implemented.', 'info'); }
+  closePrincipalModal(): void { this.principalModal?.hide(); }
+  submitPrincipalForm(): void { this.snackbarService.show('Principal submission API not yet implemented.', 'info'); }
+  confirmDeletePrincipal(principal: User): void {this.snackbarService.show('Principal deletion API not yet implemented.', 'info');}
+  // deletePrincipal(principalId: string): void { /* API call */ }
 
-  loadPrincipals(): void {
-    this.principalsSubscription = this.superAdminDataService.getPrincipals().subscribe(principals => {
-      this.principals = principals;
-      this.totalPrincipals = principals.length;
-      this.updateOverviewStats();
-    });
-  }
 
-  openPrincipalModal(principal: User | null = null): void {
-    this.editingPrincipal = principal;
-    this.initPrincipalForm(principal || undefined);
-    this.principalModal?.show();
-  }
+  // --- Student Management (Placeholder - No API for list/delete yet) ---
+  filterStudentsBySchool(event: Event): void { this.snackbarService.show('Student list API not yet implemented.', 'info'); this.students = []; }
+  confirmDeleteStudent(student: User): void {this.snackbarService.show('Student deletion API not yet implemented.', 'info');}
+  // deleteStudent(studentId: string): void { /* API call */ }
 
-  closePrincipalModal(): void {
-    this.principalModal?.hide();
-    this.editingPrincipal = null;
-    this.principalForm.reset({ isActive: true, schoolId: null });
-  }
 
-  submitPrincipalForm(): void {
-    if (this.principalForm.invalid) {
-      this.snackbarService.show('Please fill all required fields correctly for the principal.', 'error');
-      return;
-    }
-    const formValues = this.principalForm.value;
+  // updateOverviewStats is no longer needed as stats come directly from dashboardOverviewStats
+  // updateOverviewStats(): void { ... }
 
-    if (this.editingPrincipal && this.editingPrincipal.id) { // Editing
-      const updatedPrincipal: User = {
-        ...this.editingPrincipal,
-        ...formValues,
-        role: 'ADMIN' // Ensure role is maintained
-      };
-      this.superAdminDataService.updateUser(updatedPrincipal).subscribe({
-        next: () => {
-          this.snackbarService.show('Principal updated successfully!', 'success');
-          this.closePrincipalModal();
-        },
-        error: (err) => this.snackbarService.show(`Error updating principal: ${err.message}`, 'error')
-      });
-    } else { // Adding new
-      const { id, ...newPrincipalData } = formValues;
-      const newPrincipal: Omit<User, 'id'> = {
-        ...newPrincipalData,
-        role: 'ADMIN'
-      };
-      this.superAdminDataService.addUser(newPrincipal).subscribe({
-        next: () => {
-          this.snackbarService.show('Principal added successfully!', 'success');
-          this.closePrincipalModal();
-        },
-        error: (err) => this.snackbarService.show(`Error adding principal: ${err.message}`, 'error')
-      });
-    }
-  }
-
-  confirmDeletePrincipal(principal: User): void {
-    if (confirm(`Are you sure you want to delete principal ${principal.firstName} ${principal.lastName}? This action cannot be undone.`)) {
-      this.deletePrincipal(principal.id);
-    }
-  }
-
-  deletePrincipal(principalId: string): void {
-    this.superAdminDataService.deleteUser(principalId).subscribe({
-      next: () => {
-        this.snackbarService.show('Principal deleted successfully!', 'success');
-      },
-      error: (err) => this.snackbarService.show(`Error deleting principal: ${err.message}`, 'error')
-    });
-  }
-  // End Principal Management
-
-  // --- Student Management (View/Filter/Delete for Super Admin) ---
-  loadStudents(): void {
-    // This subscription will update students for the view, and also teachers for stats
-    this.studentsSubscription = this.superAdminDataService.users$.subscribe(allUsers => {
-        this.students = allUsers.filter(u => u.role === 'STUDENT');
-        this.totalStudents = this.students.length;
-
-        this.totalTeachers = allUsers.filter(u => u.role === 'TEACHER').length;
-        this.totalActiveUsers = allUsers.filter(u => u.isActive).length;
-        this.updateOverviewStats();
-    });
-  }
-
-  filterStudentsBySchool(event: Event): void {
-    const schoolId = (event.target as HTMLSelectElement).value;
-    this.selectedSchoolFilter = schoolId === '' ? null : schoolId;
-
-    this.studentsSubscription = this.superAdminDataService.getStudents().subscribe(allStudents => {
-      if (this.selectedSchoolFilter) {
-        this.students = allStudents.filter(s => s.schoolId === this.selectedSchoolFilter);
-      } else {
-        this.students = allStudents; // Show all if no filter or "All Schools" is selected
-      }
-    });
-  }
-
-  confirmDeleteStudent(student: User): void {
-    if (confirm(`Are you sure you want to delete student ${student.firstName} ${student.lastName}? This action cannot be undone.`)) {
-      this.deleteStudent(student.id);
-    }
-  }
-
-  deleteStudent(studentId: string): void {
-    this.superAdminDataService.deleteUser(studentId).subscribe({
-      next: () => {
-        this.snackbarService.show('Student deleted successfully!', 'success');
-        // The BehaviorSubject in the service will auto-update the list.
-        // If filtering is active, re-apply filter to ensure correct view.
-        if (this.selectedSchoolFilter) {
-            this.students = this.students.filter(s => s.id !== studentId);
-        }
-      },
-      error: (err) => this.snackbarService.show(`Error deleting student: ${err.message}`, 'error')
-    });
-  }
-  // End Student Management
-
-  updateOverviewStats(): void {
-    // This method will be called after schools, principals, or users data is loaded/updated.
-    // The properties totalSchools, totalPrincipals, totalStudents, totalTeachers, totalActiveUsers
-    // are already updated directly in their respective load/subscription methods.
-    // This method can be used for more complex aggregations if needed for the Reports/Stats tab.
-    console.log('Stats updated:', {
-      schools: this.totalSchools,
-      principals: this.totalPrincipals,
-      teachers: this.totalTeachers,
-      students: this.totalStudents,
-      activeUsers: this.totalActiveUsers
-    });
-  }
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'SUPER_ADMIN';

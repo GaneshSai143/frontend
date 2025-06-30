@@ -82,6 +82,26 @@
     <!-- Dashboard Content -->
     <div class="content-wrapper">
       <div class="container-fluid">
+        <div *ngIf="isLoading" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Loading dashboard data...</p>
+        </div>
+
+        <div *ngIf="!isLoading && dashboardData">
+          <div class="card mb-3">
+            <div class="card-header">Teacher Dashboard API Data</div>
+            <div class="card-body">
+              <pre>{{ dashboardData | json }}</pre>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!isLoading && !dashboardData" class="alert alert-warning">
+            Failed to load dashboard data or no data available.
+        </div>
+
+        <h4 class="mt-4">Overview (Static data below, to be replaced by API)</h4>
         <!-- Quick Stats -->
         <div class="row g-4 mb-4">
           <div class="col-md-3">

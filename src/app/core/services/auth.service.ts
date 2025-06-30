@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { tap, switchMap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { User } from '../models/user.model';
@@ -70,21 +71,35 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  updateCurrentUserProfile(userData: Partial<User>): void {
+  updateCurrentUserProfile(userData: Partial<User>): Observable<User | null> {
     const currentUser = this.currentUserSubject.value;
-    if (currentUser) {
+    if (!currentUser) {
+      return of(null); // Or throwError
+    }
+
+    if (userData.preferredTheme !== undefined) {
+      // API call to update theme
+      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { preferredTheme: userData.preferredTheme })
+        .pipe(
+          tap((responseUser) => { // Assuming API returns the updated user or at least confirms
+            const updatedUser = { ...currentUser, ...userData, ...responseUser }; // Merge, API response might have more fields
+            this.currentUserSubject.next(updatedUser);
+            localStorage.setItem('current_user', JSON.stringify(updatedUser));
+            console.log('User theme updated via API and locally:', updatedUser);
+          }),
+          catchError(err => {
+            console.error('Error updating user theme via API', err);
+            // Optionally revert optimistic update or handle error
+            return throwError(() => err);
+          })
+        );
+    } else {
+      // Handle other profile updates if necessary, or just update locally for now
       const updatedUser = { ...currentUser, ...userData };
       this.currentUserSubject.next(updatedUser);
       localStorage.setItem('current_user', JSON.stringify(updatedUser));
-      // Simulate backend update success by immediately updating local state
-      // In a real app, this would involve an HTTP PUT/PATCH request
-      // and then updating the subject upon successful response.
-
-      // If SuperAdminDataService is the source of truth for users in this demo:
-      // this.superAdminDataService.updateUser(updatedUser).subscribe();
-      // This would require injecting SuperAdminDataService which might create a circular dependency
-      // or require a more centralized state management. For now, local update is sufficient for demo.
-      console.log('Simulated user profile update:', updatedUser);
+      console.log('Simulated partial user profile update (local only):', updatedUser);
+      return of(updatedUser);
     }
   }
 
