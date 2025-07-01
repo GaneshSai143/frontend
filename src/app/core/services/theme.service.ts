@@ -26,19 +26,13 @@ export class ThemeService {
     if (currentUser) {
       this.authService.updateCurrentUserProfile({ preferredTheme: themeColor }).subscribe({
         next: () => {
-          // The currentUser$ subscription in constructor will handle applying the theme
-          // once the user object is updated.
-          // For immediate visual feedback, can also call applyColorToCssVariables here:
-          // this.applyColorToCssVariables(themeColor);
           console.log('Theme preference update sent to AuthService.');
         },
         error: (err) => {
           console.error('Failed to save theme preference', err);
-          // Optionally revert UI or show error to user
         }
       });
     } else {
-      // For non-logged-in users, or if theme change is allowed without saving to profile
       this.applyColorToCssVariables(themeColor);
     }
   }

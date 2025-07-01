@@ -81,7 +81,7 @@ export class AuthService {
       // API call to update theme
       // API call to update theme. Expects payload like {"preferredTheme": "#RRGGBB"}
       // and returns the updated UserDTO.
-      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { preferredTheme: userData.preferredTheme })
+      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { theme: userData.preferredTheme })
         .pipe(
           tap((updatedUserFromApi) => {
             // API returns the full updated UserDTO. Use this as the source of truth.
