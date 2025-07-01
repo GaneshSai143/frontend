@@ -124,7 +124,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Schools</h6>
-                    <h2 class="card-title mb-0">{{ reportTabTotalSchools || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalSchools || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -132,11 +132,12 @@
                     </div>
                   </div>
                 </div>
+              </div>
               <div class="col-md-3">
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Principals</h6>
-                    <h2 class="card-title mb-0">{{ reportTabTotalPrincipals || 0}}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -148,7 +149,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Teachers</h6>
-                    <h2 class="card-title mb-0">{{ reportTabTotalTeachers || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalTeachers || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -160,7 +161,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
-                    <h2 class="card-title mb-0">{{ reportTabTotalStudents || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalStudents || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -168,8 +169,7 @@
                   </div>
                 </div>
               </div>
-              </div>
-            
+            </div>
 
             <!-- Recent Activity and Quick Actions -->
             <div class="row">
@@ -221,7 +221,6 @@
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
           <!-- Manage Schools Tab -->
@@ -426,7 +425,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Schools</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalSchools || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalSchools || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -434,7 +433,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Principals</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalPrincipals || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -442,7 +441,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Teachers</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalTeachers || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalTeachers || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -450,7 +449,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Students</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalStudents || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalStudents || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -458,7 +457,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Active Users</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalActiveUsers || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.activeUsers || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -472,6 +471,6 @@
           </div>
         </div>
       </div>
-    <!-- </div> -->
+    </div>
   </main>
 </div>
