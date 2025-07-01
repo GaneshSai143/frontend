@@ -4,47 +4,23 @@ import { Observable, throwError } from 'rxjs'; // Removed BehaviorSubject, of
 import { catchError } from 'rxjs/operators'; // Removed map, tap, delay
 import { environment } from '../../../environments/environment';
 
-// Interface for the Super Admin Dashboard API response
-export interface SuperAdminDashboardStats {
-  totalSchools: number;
-  totalStudents: number;
-  totalTeachers: number;
-  totalPrincipals: number; // Assuming API provides this, or it's total ADMIN users
-  activeUsers?: number; // Optional, if API provides it
-  // Add any other metrics returned by GET /api/v1/dashboard/super-admin
-  // recentActivities?: any[]; // If API returns recent activities
-}
+import { environment } from '../../../environments/environment';
+import {
+    School,
+    CreateSchoolRequest,
+    UpdateSchoolRequest
+} from '../../core/models/school.model';
+import { User } from '../../core/models/user.model';
+import { CreatePrincipalRequest } from '../../core/models/principal.model';
+import {
+    StudentProfile as StudentListDTO, // Alias to clarify it's for listing
+    UpdateStudentClassRequest
+} from '../../core/models/student.model';
+import { TeacherProfile as TeacherListDTO } from '../../core/models/teacher.model';
 
-// The existing School and User interfaces might still be needed for
-// future CRUD operations on "Manage Schools/Principals" tabs,
-// but will be fetched via different API endpoints.
-// For now, SuperAdminDataService focuses on the dashboard overview.
 
-// Re-defining minimal User and School if needed by other parts or for type safety,
-// ideally these would be consolidated from core/models.
-export interface School { // Restoring fields based on original schools.json and component usage
-  id: string;
-  name: string;
-  principalId: string;
-  address: string;
-  email: string;
-  phone: string;
-  establishedDate: string;
-  studentCount?: number; // Made optional as they might not always be present or editable
-  teacherCount?: number; // Made optional
-}
-
-export interface User {
-  id: string;
-  username?: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT';
-  isActive?: boolean;
-  schoolId?: string | null;
-  grade?: string;
-}
+// Interface for the Super Admin Dashboard API response (if one existed for overview)
+// export interface SuperAdminDashboardStats { ... }
 
 
 @Injectable({
@@ -55,22 +31,71 @@ export class SuperAdminDataService {
 
   constructor(private http: HttpClient) {}
 
-  // Method getSuperAdminDashboardStats() removed as /api/v1/dashboard/super-admin does not exist.
-  // Overview stats on the dashboard will need to be static or from component-level mock data for now.
+  // --- School Management ---
+  getSchools(): Observable<School[]> { // Assuming School model matches SchoolDTO
+    return this.http.get<School[]>(`${this.apiUrl}/schools`)
+      .pipe(catchError(this.handleError));
+  }
 
-  // Placeholder for fetching data for Manage Schools/Principals/Students tabs
-  // These would call different APIs (e.g., /api/v1/schools, /api/v1/users?role=ADMIN, etc.)
-  // For now, these tabs will be display-only or use component-level mock data if needed.
+  createSchool(schoolData: CreateSchoolRequest): Observable<School> {
+    return this.http.post<School>(`${this.apiUrl}/schools`, schoolData)
+      .pipe(catchError(this.handleError));
+  }
 
-  // The BehaviorSubject and CRUD methods for schools and users are removed from this service
-  // as they were based on dummy JSON. Live CRUD will require new API endpoints and methods.
-  // If any component still relies on schools$ or users$ from this service,
-  // those components will need to be updated or this service needs to provide those
-  // observables based on new API calls (e.g. for populating dropdowns).
-  // For now, let's assume components like SuperAdminDashboard will manage their own lists for CRUD tabs.
+  updateSchool(schoolId: number, schoolData: UpdateSchoolRequest): Observable<School> {
+    return this.http.put<School>(`${this.apiUrl}/schools/${schoolId}`, schoolData)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteSchool(schoolId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/schools/${schoolId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  // --- User Management (Principals) ---
+  getPrincipals(): Observable<User[]> { // User model should align with UserDTO
+    return this.http.get<User[]>(`${this.apiUrl}/admin/principals`) // Endpoint confirmed by user
+      .pipe(catchError(this.handleError));
+  }
+
+  createPrincipal(principalData: CreatePrincipalRequest): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/admin/principals`, principalData)
+      .pipe(catchError(this.handleError));
+  }
+
+  // Generic user update - ensure User model fields match updatable fields in UserDTO
+  updateUser(userId: number, userData: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/users/${userId}`, userData)
+      .pipe(catchError(this.handleError));
+  }
+
+  // Generic user delete
+  deleteUser(userId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/users/${userId}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  // --- User Management (Teachers) ---
+  getTeachers(): Observable<TeacherListDTO[]> {
+    return this.http.get<TeacherListDTO[]>(`${this.apiUrl}/teachers`)
+        .pipe(catchError(this.handleError));
+  }
+
+  // --- User Management (Students) ---
+  getStudents(): Observable<StudentListDTO[]> { // Assuming StudentProfile (aliased) matches StudentDTO for listing
+    return this.http.get<StudentListDTO[]>(`${this.apiUrl}/students`) // No classId returns all
+      .pipe(catchError(this.handleError));
+  }
+
+  updateStudentClass(studentId: number, data: UpdateStudentClassRequest): Observable<StudentListDTO> {
+      return this.http.put<StudentListDTO>(`${this.apiUrl}/students/${studentId}`, data)
+        .pipe(catchError(this.handleError));
+  }
+
 
   private handleError(error: any): Observable<never> {
     console.error('An API error occurred in SuperAdminDataService:', error);
-    return throwError(() => new Error('Failed to load Super Admin dashboard data; please try again later.'));
+    // Customize error handling as needed, e.g., return a user-friendly error message
+    return throwError(() => new Error('An error occurred while processing your request. Please try again later.'));
   }
 }

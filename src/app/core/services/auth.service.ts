@@ -79,16 +79,15 @@ export class AuthService {
 
     if (userData.preferredTheme !== undefined) {
       // API call to update theme
-      // The API might return the updated user, a simple success message, or just a status code.
-      // We'll expect at least an HttpEvent or a minimal object indicating success.
-      return this.http.put<any>(`${environment.apiUrl}/users/me/theme`, { preferredTheme: userData.preferredTheme })
+      // API call to update theme. Expects payload like {"preferredTheme": "#RRGGBB"}
+      // and returns the updated UserDTO.
+      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { preferredTheme: userData.preferredTheme })
         .pipe(
-          tap(() => {
-            // On successful API call, update the local user object with the new theme.
-            const updatedUser = { ...currentUser, preferredTheme: userData.preferredTheme };
-            this.currentUserSubject.next(updatedUser);
-            localStorage.setItem('current_user', JSON.stringify(updatedUser));
-            console.log('User theme updated via API and locally:', updatedUser);
+          tap((updatedUserFromApi) => {
+            // API returns the full updated UserDTO. Use this as the source of truth.
+            this.currentUserSubject.next(updatedUserFromApi);
+            localStorage.setItem('current_user', JSON.stringify(updatedUserFromApi));
+            console.log('User theme updated via API and locally:', updatedUserFromApi);
           }),
           catchError(err => {
             console.error('Error updating user theme via API', err);

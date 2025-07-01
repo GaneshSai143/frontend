@@ -1,17 +1,24 @@
-export interface User {
-  id: number; // from /users/me
-  firstName: string; // from /users/me
-  lastName: string; // from /users/me
-  email: string; // from /users/me
-  role: 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT'; // from /users/me
-  preferredTheme?: string | null; // from /users/me (can be null if not set)
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
 
-  // Optional fields that might come from other sources or full user details endpoint
-  username?: string;
-  isActive?: boolean;
-  lastLogin?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-  schoolId?: string | null; // From previous work, might be relevant
-  grade?: string; // From previous work, relevant for students
+export interface User {
+  id: number; // from /users/me & UserDTO
+  firstName: string; // from /users/me & UserDTO
+  lastName: string; // from /users/me & UserDTO
+  email: string; // from /users/me & UserDTO
+  role: UserRole; // from /users/me & UserDTO
+  preferredTheme?: string | null; // from /users/me & UserDTO
+
+  username?: string; // Was in old model, not in UserDTO from Swagger but useful for display
+  enabled?: boolean; // from UserDTO (maps to isActive conceptually)
+  phoneNumber?: string; // from UserDTO
+
+  // Fields from UserDTO that might not be in /users/me but in other user contexts
+  createdAt?: string; // date-time string from UserDTO
+  updatedAt?: string; // date-time string from UserDTO
+
+  // Contextual fields, not directly from UserDTO but used in frontend logic
+  schoolId?: number | string | null; // schoolId in CreatePrincipalRequestDTO is number, in old dummy data it was string. API for school uses number.
+  schoolName?: string; // For display convenience
+  className?: string; // For StudentDTO context
+  grade?: string; // For students
 }
