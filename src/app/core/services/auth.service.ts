@@ -79,8 +79,6 @@ export class AuthService {
 
     if (userData.preferredTheme !== undefined) {
       // API call to update theme
-      // API call to update theme. Expects payload like {"theme": "#RRGGBB"}
-      // and returns the updated UserDTO (which will have "preferredTheme").
       return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { theme: userData.preferredTheme }) // Use "theme" as key in request body
         .pipe(
           tap((updatedUserFromApi) => {
