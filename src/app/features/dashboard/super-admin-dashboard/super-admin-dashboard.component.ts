@@ -380,9 +380,12 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     return userRole === 'SUPER_ADMIN';
   }
 
-  selectTheme(themeName: string): void {
-    this.themeService.setTheme(themeName);
+  onThemeColorChange(event: Event): void {
+    const color = (event.target as HTMLInputElement).value;
+    this.selectThemeColor(color); // Call method from BaseDashboardComponent
   }
+
+  // Old selectTheme(themeName: string) method removed as it's replaced by color picker.
 
   // Action methods from Overview Tab
   addNewSchool(): void {

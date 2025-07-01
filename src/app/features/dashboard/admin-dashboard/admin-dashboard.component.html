@@ -55,6 +55,14 @@
           <i class="bi bi-list"></i>
         </button>
         <div class="ms-auto d-flex align-items-center">
+           <!-- Color Picker for Theme -->
+           <div class="me-3 d-flex align-items-center">
+            <label for="themeColorPickerAdmin" class="form-label me-2 mb-0 d-none d-md-inline">Theme:</label>
+            <input type="color" class="form-control form-control-color" id="themeColorPickerAdmin"
+                   [value]="currentThemeColor"
+                   (input)="onThemeColorChange($event)"
+                   title="Select theme color">
+          </div>
           <div class="dropdown">
             <button class="btn btn-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown">
               <i class="bi bi-person-circle"></i>

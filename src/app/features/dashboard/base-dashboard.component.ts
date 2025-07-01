@@ -2,6 +2,8 @@ import { Component, OnInit, HostListener, Renderer2, ElementRef, OnDestroy } fro
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../core/models/user.model';
+import { ThemeService } from '../../core/services/theme.service'; // Import ThemeService
+import { Subscription } from 'rxjs'; // Import Subscription
 
 @Component({
   template: '' // No template here, subclasses will have their own
@@ -12,13 +14,18 @@ export abstract class BaseDashboardComponent implements OnInit, OnDestroy {
   isMobileView = false;
   showMobileSidebar = false; // For controlling overlay sidebar on mobile
 
+  // Property to bind to the color picker input
+  currentThemeColor: string = ''; // Initialize with a default or from ThemeService
+
   private resizeListener!: () => void;
+  private themeSubscription!: Subscription; // To update currentThemeColor if theme changes elsewhere
 
   constructor(
     protected authService: AuthService,
     protected router: Router,
     protected renderer: Renderer2,
-    protected el: ElementRef
+    protected el: ElementRef,
+    protected themeService: ThemeService // Inject ThemeService
   ) {}
 
   ngOnInit(): void {
@@ -29,12 +36,28 @@ export abstract class BaseDashboardComponent implements OnInit, OnDestroy {
     this.resizeListener = this.renderer.listen('window', 'resize', () => {
       this.checkIfMobileView();
     });
+
+    // Initialize currentThemeColor and subscribe to future changes
+    const initialUser = this.authService.getCurrentUser();
+    this.currentThemeColor = initialUser?.preferredTheme || '#2c3e50'; // Use known default
+
+    this.themeSubscription = this.authService.currentUser$.subscribe(user => {
+        this.currentThemeColor = user?.preferredTheme || '#2c3e50'; // Use known default
+    });
   }
 
   ngOnDestroy(): void {
     if (this.resizeListener) {
-      this.resizeListener(); // Unsubscribe from the event listener
+      this.resizeListener();
     }
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
+  }
+
+  selectThemeColor(colorCode: string): void {
+    this.themeService.setTheme(colorCode);
+    // currentThemeColor will update via the currentUser$ subscription after theme is saved and user re-emitted
   }
 
   private loadCurrentUser(): void {

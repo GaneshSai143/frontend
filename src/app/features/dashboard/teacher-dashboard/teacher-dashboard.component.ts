@@ -50,6 +50,11 @@ export class TeacherDashboardComponent extends BaseDashboardComponent {
     return userRole === 'TEACHER';
   }
 
+  onThemeColorChange(event: Event): void {
+    const color = (event.target as HTMLInputElement).value;
+    this.selectThemeColor(color); // Call method from BaseDashboardComponent
+  }
+
   // Quick Actions - to be updated if APIs are available
   createAssignment(): void {
     this.snackbarService.show('Create Assignment API not yet implemented.', 'info');
