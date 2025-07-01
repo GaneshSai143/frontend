@@ -19,10 +19,11 @@ export class AdminDashboardComponent extends BaseDashboardComponent {
     protected override router: Router,
     protected override renderer: Renderer2,
     protected override el: ElementRef,
+    protected override themeService: ThemeService, // Added and marked protected override
     private adminDataService: AdminDataService,
     private snackbarService: SnackbarService
   ) {
-    super(authService, router, renderer, el);
+    super(authService, router, renderer, el, themeService); // Pass themeService to base
   }
 
   override ngOnInit(): void {
