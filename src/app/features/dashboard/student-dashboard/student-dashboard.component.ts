@@ -27,24 +27,28 @@ export class StudentDashboardComponent extends BaseDashboardComponent {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    // this.loadDashboardData(); // Call removed as API endpoint does not exist
+    this.loadDashboardData(); // Re-enable this call
   }
 
-  // loadDashboardData(): void {
-  //   this.isLoading = true;
-  //   this.studentDataService.getStudentDashboardData().subscribe({
-  //     next: (data) => {
-  //       this.dashboardData = data;
-  //       this.isLoading = false;
-  //       // TODO: Update UI elements based on this.dashboardData
-  //     },
-  //     error: (err) => {
-  //       this.snackbarService.show('Failed to load student dashboard data.', 'error');
-  //       this.isLoading = false;
-  //       console.error(err);
-  //     }
-  //   });
-  // }
+  loadDashboardData(): void { // Re-enable this method
+    this.isLoading = true;
+    this.studentDataService.getStudentDashboardData().subscribe({
+      next: (data) => {
+        this.dashboardData = data;
+        this.isLoading = false;
+        // TODO: Update UI elements based on this.dashboardData
+        // Example: Update static cards with data.pendingTasksCount
+        // Example: Populate recent tasks list from data.recentPendingTasks
+        // Example: Populate performance summary from data.performanceSummary
+        console.log('Student Dashboard Data Loaded:', this.dashboardData);
+      },
+      error: (err) => {
+        this.snackbarService.show('Failed to load student dashboard data.', 'error');
+        this.isLoading = false;
+        console.error(err);
+      }
+    });
+  }
 
   protected override hasAccess(userRole: string): boolean {
     return userRole === 'STUDENT';
