@@ -37,15 +37,15 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   editingPrincipal: User | null = null;
   principalModal: any; // Bootstrap Modal instance
 
-  students: User[] = [];
+  students: StudentListDTO[] = []; // Changed type from User[] to StudentListDTO[]
   private studentsSubscription!: Subscription;
   // For student filtering
   allSchoolsForFilter: School[] = []; // To populate school filter dropdown
   selectedSchoolFilter: string | null = null;
   // No separate modal for students in SuperAdmin view for now, assuming view/delete primarily. Edit might navigate elsewhere or be a simpler modal.
 
-  // Stats for Overview - will be populated from API if/when that API exists
-  dashboardOverviewStats: SuperAdminDashboardStats | null = null;
+  // dashboardOverviewStats property removed as its API endpoint doesn't exist and type was causing issues.
+  // Overview tab in HTML will show static values or 0s due to {{ someVar?.property || 0 }}
 
   // Stats for the "Reports/Statistics" tab, derived from loaded lists
   reportTabTotalSchools = 0;

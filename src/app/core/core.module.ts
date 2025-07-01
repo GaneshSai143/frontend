@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 
 import { JwtInterceptor } from './interceptors/jwt.interceptor';
-import { AuthInterceptor } from './interceptors/auth.interceptor';
+// import { AuthInterceptor } from './interceptors/auth.interceptor'; // Removed stale import
 import { AuthService } from './services/auth.service';
 
 @NgModule({

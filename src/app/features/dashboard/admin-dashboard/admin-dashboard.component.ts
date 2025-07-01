@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { BaseDashboardComponent } from '../base-dashboard.component';
 import { AdminDataService, AdminDashboardData } from '../../../core/services/admin-data.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
+import { ThemeService } from '../../../core/services/theme.service'; // Added ThemeService import
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -19,7 +20,7 @@ export class AdminDashboardComponent extends BaseDashboardComponent {
     protected override router: Router,
     protected override renderer: Renderer2,
     protected override el: ElementRef,
-    protected override themeService: ThemeService, // Added and marked protected override
+    themeService: ThemeService, // Corrected: No access modifier/override here
     private adminDataService: AdminDataService,
     private snackbarService: SnackbarService
   ) {

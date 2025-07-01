@@ -4,6 +4,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { BaseDashboardComponent } from '../base-dashboard.component';
 import { TeacherDataService, TeacherDashboardData } from '../../../core/services/teacher-data.service';
 import { SnackbarService } from '../../../core/services/snackbar.service';
+import { ThemeService } from '../../../core/services/theme.service'; // Added ThemeService import
 
 @Component({
   selector: 'app-teacher-dashboard',
@@ -19,7 +20,7 @@ export class TeacherDashboardComponent extends BaseDashboardComponent {
     protected override router: Router,
     protected override renderer: Renderer2,
     protected override el: ElementRef,
-    protected override themeService: ThemeService, // Added and marked protected override
+    themeService: ThemeService, // Corrected
     private teacherDataService: TeacherDataService,
     private snackbarService: SnackbarService
   ) {
