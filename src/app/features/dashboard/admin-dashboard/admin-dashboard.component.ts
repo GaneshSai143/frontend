@@ -53,6 +53,11 @@ export class AdminDashboardComponent extends BaseDashboardComponent {
     return userRole === 'ADMIN';
   }
 
+  onThemeColorChange(event: Event): void {
+    const color = (event.target as HTMLInputElement).value;
+    this.selectThemeColor(color); // Call method from BaseDashboardComponent
+  }
+
   // Placeholder methods for Quick Actions - to be updated if APIs are available
   addNewTeacher(): void {
     this.snackbarService.show('Add New Teacher API not yet implemented.', 'info');

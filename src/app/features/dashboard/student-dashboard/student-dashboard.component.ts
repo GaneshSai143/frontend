@@ -54,6 +54,11 @@ export class StudentDashboardComponent extends BaseDashboardComponent {
     return userRole === 'STUDENT';
   }
 
+  onThemeColorChange(event: Event): void {
+    const color = (event.target as HTMLInputElement).value;
+    this.selectThemeColor(color); // Call method from BaseDashboardComponent
+  }
+
   // Placeholder methods for Quick Actions - to be updated if APIs are available
   viewCourses(): void {
     this.snackbarService.show('View Courses API not yet implemented.', 'info');

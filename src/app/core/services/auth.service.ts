@@ -79,12 +79,13 @@ export class AuthService {
 
     if (userData.preferredTheme !== undefined) {
       // API call to update theme
-      // API call to update theme. Expects payload like {"preferredTheme": "#RRGGBB"}
-      // and returns the updated UserDTO.
-      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { preferredTheme: userData.preferredTheme })
+      // API call to update theme. Expects payload like {"theme": "#RRGGBB"}
+      // and returns the updated UserDTO (which will have "preferredTheme").
+      return this.http.put<User>(`${environment.apiUrl}/users/me/theme`, { theme: userData.preferredTheme }) // Use "theme" as key in request body
         .pipe(
           tap((updatedUserFromApi) => {
-            // API returns the full updated UserDTO. Use this as the source of truth.
+            // API returns the full updated UserDTO. This response should contain the persisted 'preferredTheme'.
+            // Update local state with the full, fresh user object from the API.
             this.currentUserSubject.next(updatedUserFromApi);
             localStorage.setItem('current_user', JSON.stringify(updatedUserFromApi));
             console.log('User theme updated via API and locally:', updatedUserFromApi);
