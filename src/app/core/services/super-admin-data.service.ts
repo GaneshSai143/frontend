@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs'; // Removed BehaviorSubject, of
 import { catchError } from 'rxjs/operators'; // Removed map, tap, delay
 import { environment } from '../../../environments/environment';
 
-import { environment } from '../../../environments/environment';
+// import { environment } from '../../../environments/environment'; // Removed duplicate
 import {
     School,
     CreateSchoolRequest,

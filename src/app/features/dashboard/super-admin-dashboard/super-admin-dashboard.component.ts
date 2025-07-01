@@ -5,7 +5,14 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { BaseDashboardComponent } from '../base-dashboard.component';
 import { ThemeService } from '../../../core/services/theme.service';
-import { SuperAdminDataService, School, User, SuperAdminDashboardStats } from '../../../core/services/super-admin-data.service'; // Added SuperAdminDashboardStats
+import { SuperAdminDataService } from '../../../core/services/super-admin-data.service'; // Service import
+import { School, CreateSchoolRequest, UpdateSchoolRequest } from '../../../core/models/school.model'; // Model imports
+import { User } from '../../../core/models/user.model';
+import { CreatePrincipalRequest } from '../../../core/models/principal.model';
+import { StudentProfile as StudentListDTO, UpdateStudentClassRequest } from '../../../core/models/student.model';
+import { TeacherProfile as TeacherListDTO } from '../../../core/models/teacher.model';
+// SuperAdminDashboardStats is not used as its API endpoint doesn't exist
+// import { SuperAdminDashboardStats } from '../../../core/models/dashboard.model'; // Assuming it would be here
 import { SnackbarService } from '../../../core/services/snackbar.service';
 
 declare var bootstrap: any; // For Bootstrap Modals
@@ -76,7 +83,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
 
   override ngOnInit(): void {
     super.ngOnInit(); // Call base ngOnInit
-    // this.loadSuperAdminDashboardData(); // This API doesn't exist
+    // Call to this.loadSuperAdminDashboardData(); removed as the method and its API endpoint do not exist.
 
     this.initSchoolForm();
     this.initPrincipalForm();
@@ -360,11 +367,11 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     const schoolId = (event.target as HTMLSelectElement).value;
     this.selectedSchoolFilter = schoolId === '' ? null : schoolId;
 
-    this.superAdminDataService.getStudents().subscribe(allStudents => { // Assuming getStudents can be filtered by schoolId if API supports it, or filter client-side
+    this.superAdminDataService.getStudents().subscribe(allStudents => {
       if (this.selectedSchoolFilter) {
-        // If API supports filtering: this.superAdminDataService.getStudents({ schoolId: this.selectedSchoolFilter }).subscribe(...)
-        // Client-side filtering for now:
-        this.students = allStudents.filter(s => s.schoolId?.toString() === this.selectedSchoolFilter);
+        // Client-side filtering:
+        // StudentListDTO (aliased from StudentProfile) has 'user: User', and User has 'schoolId'
+        this.students = allStudents.filter(s => s.user.schoolId?.toString() === this.selectedSchoolFilter);
       } else {
         this.students = allStudents;
       }
