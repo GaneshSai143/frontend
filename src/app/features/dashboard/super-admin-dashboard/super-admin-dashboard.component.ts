@@ -1,5 +1,5 @@
 import { Component, OnInit, Renderer2, ElementRef, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms'; // Added FormArray
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -182,8 +182,8 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     this.schoolForm = this.fb.group({
       id: [school?.id || null],
       name: [school?.name || '', Validators.required],
-      location: [school?.location || '', Validators.required], // Maps to address in some UI
-      principalId: [school?.principalId || null, Validators.required], // This will be a User ID
+      location: [school?.location || '', Validators.required],
+      principalId: [school?.principal?.id || null, Validators.required], // Corrected: school.principal.id
       email: [school?.email || '', [Validators.required, Validators.email]],
       phone: [school?.phone || ''],
       // establishedDate: [school?.establishedDate ? new Date(school.establishedDate).toISOString().split('T')[0] : ''] // If School model has establishedDate
@@ -539,6 +539,21 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         error: (err) => this.snackbarService.show(`Error deleting teacher profile: ${err.message || 'Unknown error'}`, 'error')
       });
     }
+  }
+
+  toggleTeacherStatus(teacher: TeacherListDTO): void {
+    if (!teacher.user || teacher.user.id === undefined) { // Guard against undefined user or id
+      this.snackbarService.show('Cannot update status: Invalid teacher data.', 'error');
+      return;
+    }
+    const newStatus = !teacher.user.enabled;
+    this.superAdminDataService.setUserStatus(teacher.user.id, newStatus).subscribe({
+      next: (updatedUser) => {
+        this.snackbarService.show(`Teacher ${updatedUser.firstName} ${updatedUser.lastName} status updated to ${newStatus ? 'Enabled' : 'Disabled'}.`, 'success');
+        this.loadTeachers(); // Refresh the list to show updated status
+      },
+      error: (err) => this.snackbarService.show(`Error updating teacher status: ${err.message || 'Unknown error'}`, 'error')
+    });
   }
   // End Teacher Management
 

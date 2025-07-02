@@ -377,7 +377,7 @@
                       </button>
                        <button class="btn btn-sm ms-2"
                               [ngClass]="teacher.user.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
-                              (click)="superAdminDataService.setUserStatus(teacher.user.id, !teacher.user.enabled).subscribe(() => loadTeachers())">
+                              (click)="toggleTeacherStatus(teacher)">
                         <i class="bi" [ngClass]="teacher.user.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
                         {{ teacher.user.enabled ? 'Disable' : 'Enable' }}
                       </button>
