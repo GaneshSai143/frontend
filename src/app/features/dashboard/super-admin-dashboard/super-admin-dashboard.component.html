@@ -352,34 +352,36 @@
                     <th>Username</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Subjects</th>
+                    <th>Phone</th>
+                    <th>School ID</th> <!-- If available on User and relevant -->
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let teacher of allTeachers">
-                    <td>{{ teacher.user.username }}</td>
-                    <td>{{ teacher.user.firstName }} {{ teacher.user.lastName }}</td>
-                    <td>{{ teacher.user.email }}</td>
-                    <td>{{ teacher.subjects?.join(', ') || 'N/A' }}</td>
+                  <tr *ngFor="let teacher of allTeachers"> <!-- teacher is now User -->
+                    <td>{{ teacher.username }}</td>
+                    <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+                    <td>{{ teacher.email }}</td>
+                    <td>{{ teacher.phoneNumber || 'N/A' }}</td>
+                    <td>{{ teacher.schoolId || 'N/A' }}</td> <!-- If schoolId is on User model -->
                     <td>
-                      <span class="badge" [ngClass]="teacher.user.enabled ? 'bg-success' : 'bg-secondary'">
-                        {{ teacher.user.enabled ? 'Active' : 'Inactive' }}
+                      <span class="badge" [ngClass]="teacher.enabled ? 'bg-success' : 'bg-secondary'">
+                        {{ teacher.enabled ? 'Active' : 'Inactive' }}
                       </span>
                     </td>
                     <td>
                       <button class="btn btn-sm btn-outline-primary me-2" (click)="openTeacherModal(teacher)">
-                        <i class="bi bi-pencil-square"></i> Edit
+                        <i class="bi bi-pencil-square"></i> Edit User
                       </button>
                       <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteTeacher(teacher)">
-                        <i class="bi bi-trash"></i> Delete
+                        <i class="bi bi-trash"></i> Delete User
                       </button>
                        <button class="btn btn-sm ms-2"
-                              [ngClass]="teacher.user.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                              [ngClass]="teacher.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
                               (click)="toggleTeacherStatus(teacher)">
-                        <i class="bi" [ngClass]="teacher.user.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
-                        {{ teacher.user.enabled ? 'Disable' : 'Enable' }}
+                        <i class="bi" [ngClass]="teacher.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
+                        {{ teacher.enabled ? 'Disable' : 'Enable' }}
                       </button>
                     </td>
                   </tr>
@@ -549,10 +551,59 @@
           <div class="tab-pane fade" id="view-students" role="tabpanel" aria-labelledby="view-students-tab">
              <div class="d-flex justify-content-between align-items-center mb-3">
                 <h3><i class="bi bi-people me-2"></i>View Students</h3>
-                <p class="text-muted">Student list API not yet specified.</p>
+                 <div class="col-md-4">
+                    <select class="form-select" (change)="filterStudentsBySchool($event)" [(ngModel)]="selectedSchoolFilter">
+                        <option [ngValue]="null">All Schools</option>
+                        <option *ngFor="let school of allSchoolsForFilter.slice(1)" [value]="school.id">{{ school.name }}</option>
+                    </select>
+                 </div>
             </div>
-            <p class="text-center">Student list and filtering tools will be available here once the respective APIs are integrated.</p>
-            <!-- Existing table structure can be uncommented when APIs are ready -->
+
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>School ID</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let student of students"> <!-- student is now User -->
+                    <td>{{ student.username || 'N/A' }}</td>
+                    <td>{{ student.firstName }} {{ student.lastName }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.phoneNumber || 'N/A' }}</td>
+                    <td>{{ student.schoolId || 'N/A' }}</td> <!-- TODO: Map to School Name -->
+                    <td>{{ student.grade || 'N/A' }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="student.enabled ? 'bg-success' : 'bg-secondary'">
+                        {{ student.enabled ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                       <button class="btn btn-sm ms-2"
+                              [ngClass]="student.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                              (click)="toggleStudentStatus(student)">
+                        <i class="bi" [ngClass]="student.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
+                        {{ student.enabled ? 'Disable' : 'Enable' }}
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger ms-2" (click)="confirmDeleteStudent(student)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!students || students.length === 0">
+                    <td colspan="8" class="text-center">No students found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Reports/Statistics Tab -->

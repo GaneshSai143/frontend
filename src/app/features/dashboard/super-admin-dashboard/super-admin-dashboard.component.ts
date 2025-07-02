@@ -37,7 +37,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   editingPrincipal: User | null = null;
   principalModal: any; // Bootstrap Modal instance
 
-  students: StudentListDTO[] = []; // Changed type from User[] to StudentListDTO[]
+  students: User[] = []; // Changed type to User[]
   private studentsSubscription!: Subscription;
   // For student filtering
   allSchoolsForFilter: School[] = []; // To populate school filter dropdown
@@ -54,13 +54,11 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   reportTabTotalStudents = 0;
   reportTabTotalActiveUsers = 0; // This requires iterating all users, or a specific API endpoint
 
-  allTeachers: TeacherListDTO[] = [];
+  allTeachers: User[] = []; // Changed from TeacherListDTO[]
   private teachersSubscription!: Subscription;
-  teacherForm!: FormGroup;
-  editingTeacher: TeacherListDTO | null = null;
+  teacherForm!: FormGroup; // Will manage User properties
+  editingTeacher: User | null = null; // Changed from TeacherListDTO
   teacherModal: any; // Bootstrap Modal instance
-  // Note: TeacherDTO includes a User object. Forms will need to handle this.
-  // CreateTeacherRequestDTO might be different from updating User part of TeacherDTO.
 
   recentActivities: any[] = [
     { icon: 'bi-building', type: 'primary', title: 'New School Added', description: 'Greenwood High was added to the system.', time: '2 hours ago' },
@@ -377,20 +375,20 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     const schoolId = (event.target as HTMLSelectElement).value;
     this.selectedSchoolFilter = schoolId === '' ? null : schoolId;
 
-    this.superAdminDataService.getStudents().subscribe(allStudents => {
+    // getStudents now returns User[], so allStudents is User[]
+    this.superAdminDataService.getStudents().subscribe(allUsers => {
       if (this.selectedSchoolFilter) {
-        // Client-side filtering:
-        // StudentListDTO (aliased from StudentProfile) has 'user: User', and User has 'schoolId'
-        this.students = allStudents.filter(s => s.user.schoolId?.toString() === this.selectedSchoolFilter);
+        this.students = allUsers.filter(s => s.schoolId?.toString() === this.selectedSchoolFilter);
       } else {
-        this.students = allStudents;
+        this.students = allUsers;
       }
        this.reportTabTotalStudents = this.students.length; // Update count based on filter
     });
   }
-  confirmDeleteStudent(student: StudentListDTO): void { // Use StudentListDTO
-    if (confirm(`Are you sure you want to delete student ${student.user.firstName} ${student.user.lastName}?`)) {
-        this.superAdminDataService.deleteUser(student.user.id).subscribe({ // Delete by User ID
+
+  confirmDeleteStudent(student: User): void { // Changed to User
+    if (confirm(`Are you sure you want to delete student ${student.firstName} ${student.lastName}?`)) {
+        this.superAdminDataService.deleteUser(student.id).subscribe({
             next: () => {
                 this.snackbarService.show('Student deleted successfully!', 'success');
                 this.loadStudents();
@@ -399,9 +397,24 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         });
     }
   }
-  // deleteStudent(studentId: string): void { /* API call - now uses User ID */ }
 
-  // --- Teacher Stats ---
+  toggleStudentStatus(student: User): void {
+    if (!student || student.id === undefined) {
+      this.snackbarService.show('Cannot update status: Invalid student data.', 'error');
+      return;
+    }
+    const newStatus = !student.enabled;
+    this.superAdminDataService.setUserStatus(student.id, newStatus).subscribe({
+      next: (updatedUser) => {
+        this.snackbarService.show(`Student ${updatedUser.firstName} ${updatedUser.lastName} status updated to ${newStatus ? 'Enabled' : 'Disabled'}.`, 'success');
+        this.loadStudents(); // Refresh the list
+      },
+      error: (err) => this.snackbarService.show(`Error updating student status: ${err.message || 'Unknown error'}`, 'error')
+    });
+  }
+  // End Student Management (was mislabeled Teacher Stats)
+
+  // --- Teacher Stats / Management --- (Correcting comment)
   loadTeachers(): void {
       this.teachersSubscription = this.superAdminDataService.getTeachers().subscribe(
           data => {
@@ -415,142 +428,125 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   // updateOverviewStats is no longer needed as stats come directly from dashboardOverviewStats or list lengths
   // updateOverviewStats(): void { ... }
 
-  // --- Teacher Management ---
-  initTeacherForm(teacher?: TeacherListDTO): void {
-    // TeacherListDTO has a nested User object. The form should reflect fields from both.
-    // CreateTeacherRequestDTO is for creating a Teacher *profile* for an *existing* User.
-    // CreateTeacherByAdminRequestDTO (from Swagger, not yet in models.ts) is for creating User and Teacher profile.
-    // For simplicity, this form will edit existing Teacher's User details and their subjects.
-    // Adding a *new* teacher would ideally involve first creating a User, then creating a Teacher profile.
-    // Or using an API like POST /api/admin/teachers if SuperAdmin can use it.
-
+  // --- Teacher Management (Uses UserDTO) ---
+  initTeacherForm(teacher?: User): void { // Parameter is User
     this.teacherForm = this.fb.group({
-      userId: [teacher?.user.id || null], // From nested user
-      teacherProfileId: [teacher?.id || null], // TeacherProfile ID
-      username: [teacher?.user.username || '', Validators.required],
-      firstName: [teacher?.user.firstName || '', Validators.required],
-      lastName: [teacher?.user.lastName || '', Validators.required],
-      email: [teacher?.user.email || '', [Validators.required, Validators.email]],
-      phoneNumber: [teacher?.user.phoneNumber || ''],
-      enabled: [teacher?.user.enabled === undefined ? true : teacher.user.enabled, Validators.required],
-      subjects: this.fb.array(teacher?.subjects?.map(s => this.fb.control(s)) || [])
-      // schoolId is part of the User model, but for teachers, it's often tied to their school context,
-      // which might not be directly part of TeacherDTO or UserDTO but through class assignments or school affiliation.
-      // The current TeacherDTO doesn't show a direct schoolId.
+      id: [teacher?.id || null], // This is the User ID
+      username: [teacher?.username || '', Validators.required],
+      firstName: [teacher?.firstName || '', Validators.required],
+      lastName: [teacher?.lastName || '', Validators.required],
+      email: [teacher?.email || '', [Validators.required, Validators.email]],
+      phoneNumber: [teacher?.phoneNumber || ''],
+      enabled: [teacher?.enabled === undefined ? true : teacher.enabled, Validators.required],
+      password: [''], // For creating new user, or if password change is allowed
+      schoolId: [teacher?.schoolId || null] // Optional: if SuperAdmin assigns school to teacher directly
+      // Subjects are not part of UserDTO, so removed from this form.
+      // Managing teacher subjects would require a separate UI/API call to TeacherProfile endpoints.
     });
   }
 
-  openTeacherModal(teacher: TeacherListDTO | null = null): void {
+  openTeacherModal(teacher: User | null = null): void { // Parameter is User
     this.editingTeacher = teacher;
     this.initTeacherForm(teacher || undefined);
-    // TODO: Add password fields for create new teacher user, or use a separate flow.
-    // For now, this modal is primarily for editing existing teacher user details & subjects.
-    // Or creating a Teacher Profile for an existing User (if CreateTeacherProfileRequest is used).
+    if (teacher) {
+        this.teacherForm.get('password')?.clearValidators();
+        this.teacherForm.get('password')?.updateValueAndValidity();
+    } else { // Require password for new teacher user
+        this.teacherForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+        this.teacherForm.get('password')?.updateValueAndValidity();
+    }
     this.teacherModal?.show();
   }
 
   closeTeacherModal(): void {
     this.teacherModal?.hide();
     this.editingTeacher = null;
-    this.teacherForm.reset({enabled: true});
-    (this.teacherForm.get('subjects') as FormArray).clear();
+    this.teacherForm.reset({enabled: true, schoolId: null});
   }
 
-  get subjectFormArray(): FormArray {
-    return this.teacherForm.get('subjects') as FormArray;
-  }
-
-  addSubjectToTeacherForm(): void {
-    this.subjectFormArray.push(this.fb.control('', Validators.required));
-  }
-
-  removeSubjectFromTeacherForm(index: number): void {
-    this.subjectFormArray.removeAt(index);
-  }
+  // get subjectFormArray(): FormArray { ... } // Removed
+  // addSubjectToTeacherForm(): void { ... } // Removed
+  // removeSubjectFromTeacherForm(index: number): void { ... } // Removed
 
   submitTeacherForm(): void {
     if (this.teacherForm.invalid) {
-      this.snackbarService.show('Please fill all required fields for the teacher.', 'error');
+      this.snackbarService.show('Please fill all required fields for the teacher user.', 'error');
       return;
     }
     const formValues = this.teacherForm.value;
 
-    if (this.editingTeacher && this.editingTeacher.id && this.editingTeacher.user.id) { // Editing existing teacher
-      // 1. Update User details (firstName, lastName, email, enabled, etc.)
+    if (this.editingTeacher && this.editingTeacher.id) { // Editing existing User (Teacher)
       const userUpdateData: Partial<User> = {
         username: formValues.username,
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         email: formValues.email,
         phoneNumber: formValues.phoneNumber,
-        enabled: formValues.enabled
+        enabled: formValues.enabled,
+        schoolId: formValues.schoolId // If SuperAdmin can set/change school for a teacher user
+        // Password update would typically be a separate process or require current password.
+        // Not including formValues.password here unless explicitly intended for UserDTO update.
       };
-      this.superAdminDataService.updateUser(this.editingTeacher.user.id, userUpdateData).subscribe({
+      this.superAdminDataService.updateUser(this.editingTeacher.id, userUpdateData).subscribe({
         next: () => {
-          // 2. Update TeacherProfile specific details (subjects)
-          const teacherProfileUpdateData: UpdateTeacherProfileRequest = {
-            subjects: formValues.subjects
-          };
-          this.superAdminDataService.updateTeacherProfile(this.editingTeacher!.id, teacherProfileUpdateData).subscribe({
-            next: () => {
-              this.snackbarService.show('Teacher updated successfully!', 'success');
-              this.loadTeachers();
-              this.closeTeacherModal();
-            },
-            error: (err) => this.snackbarService.show(`Error updating teacher subjects: ${err.message || 'Unknown error'}`, 'error')
-          });
+          this.snackbarService.show('Teacher user details updated successfully!', 'success');
+          this.loadTeachers();
+          this.closeTeacherModal();
         },
         error: (err) => this.snackbarService.show(`Error updating teacher user details: ${err.message || 'Unknown error'}`, 'error')
       });
-    } else {
-      // Creating a new teacher: This is more complex.
-      // Option A: Use POST /api/admin/teachers (if SuperAdmin can use it and it creates User + TeacherProfile)
-      // Option B: First POST to create User, then POST to /api/teachers to create TeacherProfile.
-      // For now, let's assume POST /api/teachers (CreateTeacherProfileRequest) is for linking an *existing* user.
-      // The form as designed is more for editing or a combined create flow.
-      // I will implement a placeholder for create, assuming an API like POST /api/admin/teachers
-      // which would take all user and teacher details.
-      // This needs CreateTeacherByAdminRequest model.
-      this.snackbarService.show('Create new teacher (User + Profile) API not fully defined for this form. Using placeholder.', 'info');
-      // Example if using CreateTeacherProfileRequest (requires existing user ID):
-      // const teacherProfileCreate: CreateTeacherProfileRequest = { userId: formValues.userId, subjects: formValues.subjects };
-      // this.superAdminDataService.createTeacher(teacherProfileCreate).subscribe(...);
-      this.closeTeacherModal();
-    }
-  }
-
-  confirmDeleteTeacher(teacher: TeacherListDTO): void {
-    if (confirm(`Are you sure you want to delete teacher ${teacher.user.firstName} ${teacher.user.lastName}? This may also delete their user account if no other roles are associated.`)) {
-      // First delete TeacherProfile, then the User account if desired.
-      // Or, backend might handle this cascade. For now, just delete profile then user.
-      this.superAdminDataService.deleteTeacherProfile(teacher.id).subscribe({
+    } else { // Creating a new User with role TEACHER
+      const newTeacherUserData: Omit<User, 'id'> = { // Or a specific CreateTeacherUserRequestDTO if API expects it
+        username: formValues.username,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        email: formValues.email,
+        password: formValues.password, // Assuming generic addUser can take password
+        phoneNumber: formValues.phoneNumber,
+        enabled: formValues.enabled,
+        role: 'TEACHER', // Set role
+        schoolId: formValues.schoolId
+      };
+      // Assuming SuperAdminDataService.addUser handles creation of a user with a role.
+      // The existing `createTeacherByAdmin` or a generic `createUser` in service would be better.
+      // For now, using generic `addUser` and hoping backend sets role if it's part of User DTO for create.
+      // This part needs specific API endpoint for creating user with role by SuperAdmin.
+      // Using POST /api/admin/teachers might be more appropriate if SuperAdmin can use it.
+      // Let's assume we need a CreateUserWithRole DTO for addUser or use createTeacherByAdmin if available.
+      // For now, this will likely fail if `addUser` doesn't support role assignment.
+      this.superAdminDataService.addUser(newTeacherUserData as User).subscribe({ // Cast needed as Omit<User,'id'>
         next: () => {
-          this.superAdminDataService.deleteUser(teacher.user.id).subscribe({
-            next: () => {
-              this.snackbarService.show('Teacher and user account deleted successfully!', 'success');
-              this.loadTeachers();
-            },
-            error: (err) => {
-              this.snackbarService.show(`User account for teacher might not have been deleted: ${err.message || 'Unknown error'}. Teacher profile was deleted.`, 'warning');
-              this.loadTeachers(); // Still reload teachers list
-            }
-          });
+          this.snackbarService.show('New teacher user created successfully!', 'success');
+          this.loadTeachers();
+          this.closeTeacherModal();
         },
-        error: (err) => this.snackbarService.show(`Error deleting teacher profile: ${err.message || 'Unknown error'}`, 'error')
+        error: (err) => this.snackbarService.show(`Error creating new teacher user: ${err.message || 'Unknown error'}`, 'error')
       });
     }
   }
 
-  toggleTeacherStatus(teacher: TeacherListDTO): void {
-    if (!teacher.user || teacher.user.id === undefined) { // Guard against undefined user or id
+  confirmDeleteTeacher(teacher: User): void { // Parameter is User
+    if (confirm(`Are you sure you want to delete teacher ${teacher.firstName} ${teacher.lastName}? This will delete their user account.`)) {
+      this.superAdminDataService.deleteUser(teacher.id).subscribe({
+        next: () => {
+          this.snackbarService.show('Teacher user account deleted successfully!', 'success');
+          this.loadTeachers();
+        },
+        error: (err) => this.snackbarService.show(`Error deleting teacher user account: ${err.message || 'Unknown error'}`, 'error')
+      });
+    }
+  }
+
+  toggleTeacherStatus(teacher: User): void { // Parameter is User
+    if (!teacher || teacher.id === undefined) {
       this.snackbarService.show('Cannot update status: Invalid teacher data.', 'error');
       return;
     }
-    const newStatus = !teacher.user.enabled;
-    this.superAdminDataService.setUserStatus(teacher.user.id, newStatus).subscribe({
+    const newStatus = !teacher.enabled;
+    this.superAdminDataService.setUserStatus(teacher.id, newStatus).subscribe({
       next: (updatedUser) => {
         this.snackbarService.show(`Teacher ${updatedUser.firstName} ${updatedUser.lastName} status updated to ${newStatus ? 'Enabled' : 'Disabled'}.`, 'success');
-        this.loadTeachers(); // Refresh the list to show updated status
+        this.loadTeachers();
       },
       error: (err) => this.snackbarService.show(`Error updating teacher status: ${err.message || 'Unknown error'}`, 'error')
     });

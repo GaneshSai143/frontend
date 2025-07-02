@@ -10,7 +10,7 @@ import {
     CreateSchoolRequest,
     UpdateSchoolRequest
 } from '../../core/models/school.model';
-import { User } from '../../core/models/user.model';
+import { User, UserRole } from '../../core/models/user.model'; // Added UserRole
 import { CreatePrincipalRequest } from '../../core/models/principal.model';
 import {
     StudentProfile as StudentListDTO, // Alias to clarify it's for listing
@@ -57,10 +57,14 @@ export class SuperAdminDataService {
       .pipe(catchError(this.handleError));
   }
 
-  // --- User Management (Principals) ---
-  getPrincipals(): Observable<User[]> { // User model should align with UserDTO
-    return this.http.get<User[]>(`${this.apiUrl}/admin/principals`) // Endpoint confirmed by user
+  // --- User Management (Shared & Principals) ---
+  getUsersByRole(role: UserRole): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/users/by-role`, { params: { role: role } })
       .pipe(catchError(this.handleError));
+  }
+
+  getPrincipals(): Observable<User[]> {
+    return this.getUsersByRole('ADMIN');
   }
 
   createPrincipal(principalData: CreatePrincipalRequest): Observable<User> {
@@ -81,38 +85,42 @@ export class SuperAdminDataService {
   }
 
   // --- User Management (Teachers) ---
-  getTeachers(): Observable<TeacherListDTO[]> {
-    return this.http.get<TeacherListDTO[]>(`${this.apiUrl}/teachers`)
-        .pipe(catchError(this.handleError));
+  getTeachers(): Observable<User[]> { // Now returns User[]
+    return this.getUsersByRole('TEACHER');
   }
 
-  createTeacher(data: CreateTeacherProfileRequest): Observable<TeacherListDTO> {
+  // createTeacher, updateTeacherProfile, deleteTeacherProfile remain for managing Teacher *Profile* specific details
+  // if different from generic User creation/update.
+  // For now, SuperAdmin dashboard will primarily manage teachers as Users.
+  // These methods might be used if a separate "Teacher Profile" edit screen is made.
+  createTeacherProfile(data: CreateTeacherProfileRequest): Observable<TeacherListDTO> { // Renamed for clarity
     return this.http.post<TeacherListDTO>(`${this.apiUrl}/teachers`, data)
       .pipe(catchError(this.handleError));
   }
 
-  updateTeacherProfile(teacherProfileId: number, data: UpdateTeacherProfileRequest): Observable<TeacherListDTO> {
+  updateTeacherProfileDetails(teacherProfileId: number, data: UpdateTeacherProfileRequest): Observable<TeacherListDTO> { // Renamed
     return this.http.put<TeacherListDTO>(`${this.apiUrl}/teachers/${teacherProfileId}`, data)
       .pipe(catchError(this.handleError));
   }
 
-  deleteTeacherProfile(teacherProfileId: number): Observable<void> {
+  deleteTeacherProfileOnly(teacherProfileId: number): Observable<void> { // Renamed
     return this.http.delete<void>(`${this.apiUrl}/teachers/${teacherProfileId}`)
       .pipe(catchError(this.handleError));
   }
 
   // --- User Management (Students) ---
-  getStudents(): Observable<StudentListDTO[]> { // Assuming StudentProfile (aliased) matches StudentDTO for listing
-    return this.http.get<StudentListDTO[]>(`${this.apiUrl}/students`) // No classId returns all
-      .pipe(catchError(this.handleError));
+  getStudents(): Observable<User[]> { // Now returns User[]
+    return this.getUsersByRole('STUDENT');
   }
 
-  updateStudentClass(studentId: number, data: UpdateStudentClassRequest): Observable<StudentListDTO> {
-      return this.http.put<StudentListDTO>(`${this.apiUrl}/students/${studentId}`, data)
+  // updateStudentClass is specific to Student Profile management
+  updateStudentClass(studentProfileId: number, data: UpdateStudentClassRequest): Observable<StudentListDTO> { // studentProfileId is likely User ID if API is /api/students/{id}
+      return this.http.put<StudentListDTO>(`${this.apiUrl}/students/${studentProfileId}`, data)
         .pipe(catchError(this.handleError));
   }
 
-  createStudent(data: CreateStudentProfileRequest): Observable<StudentListDTO> {
+  // createStudent links an existing user to a student profile and class.
+  createStudentProfile(data: CreateStudentProfileRequest): Observable<StudentListDTO> { // Renamed
     return this.http.post<StudentListDTO>(`${this.apiUrl}/students`, data)
       .pipe(catchError(this.handleError));
   }

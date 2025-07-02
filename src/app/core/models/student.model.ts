@@ -35,3 +35,9 @@ export interface StudentDashboardSummary { // Based on StudentDashboardDTO
   recentPendingTasks: TaskSummary[];
   performanceSummary: PerformanceItem[];
 }
+
+// Based on CreateStudentRequestDTO from Swagger (for POST /api/students)
+export interface CreateStudentRequest {
+  userId: number;
+  classId: number;
+}
