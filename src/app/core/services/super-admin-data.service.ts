@@ -14,9 +14,14 @@ import { User } from '../../core/models/user.model';
 import { CreatePrincipalRequest } from '../../core/models/principal.model';
 import {
     StudentProfile as StudentListDTO, // Alias to clarify it's for listing
-    UpdateStudentClassRequest
+    UpdateStudentClassRequest,
+    CreateStudentRequest as CreateStudentProfileRequest // Alias to match naming
 } from '../../core/models/student.model';
-import { TeacherProfile as TeacherListDTO } from '../../core/models/teacher.model';
+import {
+    TeacherProfile as TeacherListDTO,
+    CreateTeacherProfileRequest,
+    UpdateTeacherProfileRequest
+} from '../../core/models/teacher.model';
 
 
 // Interface for the Super Admin Dashboard API response (if one existed for overview)
@@ -81,6 +86,21 @@ export class SuperAdminDataService {
         .pipe(catchError(this.handleError));
   }
 
+  createTeacher(data: CreateTeacherProfileRequest): Observable<TeacherListDTO> {
+    return this.http.post<TeacherListDTO>(`${this.apiUrl}/teachers`, data)
+      .pipe(catchError(this.handleError));
+  }
+
+  updateTeacherProfile(teacherProfileId: number, data: UpdateTeacherProfileRequest): Observable<TeacherListDTO> {
+    return this.http.put<TeacherListDTO>(`${this.apiUrl}/teachers/${teacherProfileId}`, data)
+      .pipe(catchError(this.handleError));
+  }
+
+  deleteTeacherProfile(teacherProfileId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/teachers/${teacherProfileId}`)
+      .pipe(catchError(this.handleError));
+  }
+
   // --- User Management (Students) ---
   getStudents(): Observable<StudentListDTO[]> { // Assuming StudentProfile (aliased) matches StudentDTO for listing
     return this.http.get<StudentListDTO[]>(`${this.apiUrl}/students`) // No classId returns all
@@ -92,6 +112,17 @@ export class SuperAdminDataService {
         .pipe(catchError(this.handleError));
   }
 
+  createStudent(data: CreateStudentProfileRequest): Observable<StudentListDTO> {
+    return this.http.post<StudentListDTO>(`${this.apiUrl}/students`, data)
+      .pipe(catchError(this.handleError));
+  }
+
+  // --- Shared User Actions ---
+  setUserStatus(userId: number, enable: boolean): Observable<User> {
+    const endpoint = enable ? `${this.apiUrl}/users/${userId}/enable` : `${this.apiUrl}/users/${userId}/disable`;
+    return this.http.put<User>(endpoint, {}) // PUT request typically with empty body for enable/disable
+      .pipe(catchError(this.handleError));
+  }
 
   private handleError(error: any): Observable<never> {
     console.error('An API error occurred in SuperAdminDataService:', error);
