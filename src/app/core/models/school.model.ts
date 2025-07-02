@@ -4,39 +4,37 @@ import { User } from './user.model'; // Assuming UserDTO maps to our User model
 export interface MinimalClassInfo { // Renamed from ClassDTO to avoid conflict if full ClassDTO is defined elsewhere
   id: number;
   name: string;
-  // Other fields like schoolId, classTeacher, students might not be needed in SchoolDTO's 'classes' array display
+  // Other fields like schoolId, classTeacher may not be needed for simple list display in SchoolDTO
 }
 
-export interface School { // Based on SchoolDTO from Swagger
+export interface School { // Aligns with SchoolDTO from Swagger
   id: number;
   name: string;
-  location: string; // Maps to 'address' in some contexts, 'location' in SchoolDTO
-  principal?: User; // UserDTO for principal details
-  classes?: MinimalClassInfo[]; // Array of ClassDTO (simplified here)
-  createdAt?: string; // Typically string in ISO format from backend
-  updatedAt?: string; // Typically string in ISO format from backend
+  location: string;
+  principal?: User; // Nested UserDTO for the principal
+  classes?: MinimalClassInfo[];
+  createdAt?: string;
+  updatedAt?: string;
 
-  // Fields from older model/dummy data that might still be used in UI or forms, make optional
-  // These were used by SuperAdminDashboard forms/tables
-  address?: string; // Covered by location, but keeping if UI uses 'address' specifically
-  email?: string;
-  phone?: string;
-  principalId?: number | null; // Used in forms, API takes principalId for create/update
-  establishedDate?: string;
-  studentCount?: number;
-  teacherCount?: number;
-  website?: string; // from old model
-  logo?: string; // from old model
+  // Optional fields that might be used in UI forms but not part of core SchoolDTO response
+  // These were part of the older 'School' interface or form requirements.
+  // The main SchoolDTO focuses on 'location' for address-like info.
+  // 'email' and 'phone' for a school are not in SchoolDTO.
+  // 'establishedDate', 'studentCount', 'teacherCount' are not in SchoolDTO.
+  email?: string; // Not in SchoolDTO, consider removing if not used
+  phone?: string; // Not in SchoolDTO, consider removing if not used
+  establishedDate?: string; // Not in SchoolDTO
+  // principalId is handled by CreateSchoolRequest/UpdateSchoolRequest, not part of SchoolDTO response directly.
 }
 
-export interface CreateSchoolRequest { // Based on CreateSchoolRequestDTO
+export interface CreateSchoolRequest { // Aligns with CreateSchoolRequestDTO
   name: string;
   location: string;
-  principalId: number;
+  principalId: number; // ID of the User who is the principal
 }
 
-export interface UpdateSchoolRequest { // Based on UpdateSchoolRequestDTO
+export interface UpdateSchoolRequest { // Aligns with UpdateSchoolRequestDTO
   name?: string;
   location?: string;
-  principalId?: number;
+  principalId?: number; // ID of the User who is the principal
 }
