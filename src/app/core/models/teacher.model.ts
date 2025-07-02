@@ -14,7 +14,7 @@ export interface CreateTeacherByAdminRequest {
   firstName: string;
   lastName: string;
   email: string;
-  password?: string; // minLength: 6
+  password: string; // minLength: 6, required by DTO for /api/admin/teachers
   phoneNumber?: string;
   subjects?: string[];
   role: 'TEACHER'; // Fixed role

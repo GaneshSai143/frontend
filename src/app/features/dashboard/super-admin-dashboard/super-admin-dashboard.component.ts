@@ -195,7 +195,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         this.allSchoolsForFilter = [{ id: 0, name: 'All Schools', location: '' }, ...data]; // Placeholder for 'All'
         this.reportTabTotalSchools = data.length;
       },
-      err => this.snackbarService.show('Failed to load schools.', 'error')
+      (err: any) => this.snackbarService.show('Failed to load schools.', 'error')
     );
   }
 
@@ -228,7 +228,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.loadSchools();
                 this.closeSchoolModal();
             },
-            error: (err) => this.snackbarService.show(`Error updating school: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error updating school: ${err.message || 'Unknown error'}`, 'error')
         });
     } else {
         this.superAdminDataService.createSchool(schoolRequestData as CreateSchoolRequest).subscribe({
@@ -237,7 +237,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.loadSchools();
                 this.closeSchoolModal();
             },
-            error: (err) => this.snackbarService.show(`Error creating school: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error creating school: ${err.message || 'Unknown error'}`, 'error')
         });
     }
   }
@@ -248,7 +248,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.snackbarService.show('School deleted successfully!', 'success');
                 this.loadSchools();
             },
-            error: (err) => this.snackbarService.show(`Error deleting school: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error deleting school: ${err.message || 'Unknown error'}`, 'error')
         });
     }
   }
@@ -275,7 +275,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         this.principals = data;
         this.reportTabTotalPrincipals = data.length;
       },
-      err => this.snackbarService.show('Failed to load principals.', 'error')
+      (err: any) => this.snackbarService.show('Failed to load principals.', 'error')
     );
   }
 
@@ -325,7 +325,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.loadPrincipals();
                 this.closePrincipalModal();
             },
-            error: (err) => this.snackbarService.show(`Error updating principal: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error updating principal: ${err.message || 'Unknown error'}`, 'error')
         });
     } else { // Creating new principal
         const principalCreateData: CreatePrincipalRequest = {
@@ -344,7 +344,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.loadPrincipals();
                 this.closePrincipalModal();
             },
-            error: (err) => this.snackbarService.show(`Error creating principal: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error creating principal: ${err.message || 'Unknown error'}`, 'error')
         });
     }
   }
@@ -355,7 +355,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.snackbarService.show('Principal deleted successfully!', 'success');
                 this.loadPrincipals();
             },
-            error: (err) => this.snackbarService.show(`Error deleting principal: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error deleting principal: ${err.message || 'Unknown error'}`, 'error')
         });
     }
   }
@@ -367,7 +367,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
             this.students = data;
             this.reportTabTotalStudents = data.length;
         },
-        err => this.snackbarService.show('Failed to load students.', 'error')
+        (err: any) => this.snackbarService.show('Failed to load students.', 'error')
     );
   }
 
@@ -393,7 +393,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
                 this.snackbarService.show('Student deleted successfully!', 'success');
                 this.loadStudents();
             },
-            error: (err) => this.snackbarService.show(`Error deleting student: ${err.message || 'Unknown error'}`, 'error')
+            error: (err: any) => this.snackbarService.show(`Error deleting student: ${err.message || 'Unknown error'}`, 'error')
         });
     }
   }
@@ -409,7 +409,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         this.snackbarService.show(`Student ${updatedUser.firstName} ${updatedUser.lastName} status updated to ${newStatus ? 'Enabled' : 'Disabled'}.`, 'success');
         this.loadStudents(); // Refresh the list
       },
-      error: (err) => this.snackbarService.show(`Error updating student status: ${err.message || 'Unknown error'}`, 'error')
+      error: (err: any) => this.snackbarService.show(`Error updating student status: ${err.message || 'Unknown error'}`, 'error')
     });
   }
   // End Student Management (was mislabeled Teacher Stats)
@@ -421,7 +421,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
               this.allTeachers = data;
               this.reportTabTotalTeachers = data.length;
           },
-          err => this.snackbarService.show('Failed to load teachers for stats.', 'error')
+          (err: any) => this.snackbarService.show('Failed to load teachers for stats.', 'error')
       );
   }
 
@@ -493,34 +493,27 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
           this.loadTeachers();
           this.closeTeacherModal();
         },
-        error: (err) => this.snackbarService.show(`Error updating teacher user details: ${err.message || 'Unknown error'}`, 'error')
+        error: (err: any) => this.snackbarService.show(`Error updating teacher user details: ${err.message || 'Unknown error'}`, 'error')
       });
-    } else { // Creating a new User with role TEACHER
-      const newTeacherUserData: Omit<User, 'id'> = { // Or a specific CreateTeacherUserRequestDTO if API expects it
-        username: formValues.username,
+    } else { // Creating a new teacher user via POST /api/admin/teachers
+      const createTeacherRequest: CreateTeacherByAdminRequest = {
         firstName: formValues.firstName,
         lastName: formValues.lastName,
         email: formValues.email,
-        password: formValues.password, // Assuming generic addUser can take password
+        password: formValues.password, // Required by DTO
         phoneNumber: formValues.phoneNumber,
-        enabled: formValues.enabled,
-        role: 'TEACHER', // Set role
-        schoolId: formValues.schoolId
+        // subjects: [], // Subjects are not part of this simplified form.
+        role: 'TEACHER' // DTO requires role
       };
-      // Assuming SuperAdminDataService.addUser handles creation of a user with a role.
-      // The existing `createTeacherByAdmin` or a generic `createUser` in service would be better.
-      // For now, using generic `addUser` and hoping backend sets role if it's part of User DTO for create.
-      // This part needs specific API endpoint for creating user with role by SuperAdmin.
-      // Using POST /api/admin/teachers might be more appropriate if SuperAdmin can use it.
-      // Let's assume we need a CreateUserWithRole DTO for addUser or use createTeacherByAdmin if available.
-      // For now, this will likely fail if `addUser` doesn't support role assignment.
-      this.superAdminDataService.addUser(newTeacherUserData as User).subscribe({ // Cast needed as Omit<User,'id'>
-        next: () => {
-          this.snackbarService.show('New teacher user created successfully!', 'success');
+
+      this.superAdminDataService.createTeacherByAdmin(createTeacherRequest).subscribe({
+        next: (newTeacherProfile) => { // API returns TeacherProfile (TeacherDTO)
+          this.snackbarService.show(`Teacher ${newTeacherProfile.user.firstName} ${newTeacherProfile.user.lastName} created successfully!`, 'success');
           this.loadTeachers();
           this.closeTeacherModal();
         },
-        error: (err) => this.snackbarService.show(`Error creating new teacher user: ${err.message || 'Unknown error'}`, 'error')
+        error: (err: any) => this.snackbarService.show(`Error creating new teacher: ${err.message || 'Unknown error'}`, 'error')
+        // The error 'err' parameter was already typed in the previous correction for this specific block
       });
     }
   }
@@ -533,6 +526,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
           this.loadTeachers();
         },
         error: (err) => this.snackbarService.show(`Error deleting teacher user account: ${err.message || 'Unknown error'}`, 'error')
+        // The error 'err' parameter was already typed in the previous correction for this specific block
       });
     }
   }
@@ -549,6 +543,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
         this.loadTeachers();
       },
       error: (err) => this.snackbarService.show(`Error updating teacher status: ${err.message || 'Unknown error'}`, 'error')
+      // The error 'err' parameter was already typed in the previous correction for this specific block
     });
   }
   // End Teacher Management
