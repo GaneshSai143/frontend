@@ -20,7 +20,8 @@ import {
 import {
     TeacherProfile as TeacherListDTO,
     CreateTeacherProfileRequest,
-    UpdateTeacherProfileRequest
+    UpdateTeacherProfileRequest,
+    CreateTeacherByAdminRequest // Added this import
 } from '../../core/models/teacher.model';
 
 
@@ -85,20 +86,24 @@ export class SuperAdminDataService {
   }
 
   // --- User Management (Teachers) ---
-  getTeachers(): Observable<User[]> { // Now returns User[]
+  getTeachers(): Observable<User[]> { // Now returns User[] (list of users with TEACHER role)
     return this.getUsersByRole('TEACHER');
   }
 
-  // createTeacher, updateTeacherProfile, deleteTeacherProfile remain for managing Teacher *Profile* specific details
-  // if different from generic User creation/update.
-  // For now, SuperAdmin dashboard will primarily manage teachers as Users.
-  // These methods might be used if a separate "Teacher Profile" edit screen is made.
-  createTeacherProfile(data: CreateTeacherProfileRequest): Observable<TeacherListDTO> { // Renamed for clarity
-    return this.http.post<TeacherListDTO>(`${this.apiUrl}/teachers`, data)
+  // Method for SuperAdmin/Admin to create a new User with TEACHER role and link to TeacherProfile
+  createTeacherByAdmin(data: CreateTeacherByAdminRequest): Observable<TeacherListDTO> { // Swagger says response is TeacherDTO
+    return this.http.post<TeacherListDTO>(`${this.apiUrl}/admin/teachers`, data)
       .pipe(catchError(this.handleError));
   }
 
-  updateTeacherProfileDetails(teacherProfileId: number, data: UpdateTeacherProfileRequest): Observable<TeacherListDTO> { // Renamed
+  // Methods for managing Teacher *Profile* specific details (like subjects) for an existing teacher profile
+  // These operate on TeacherProfile ID, not User ID directly for these actions.
+  getTeacherProfile(teacherProfileId: number): Observable<TeacherListDTO> {
+    return this.http.get<TeacherListDTO>(`${this.apiUrl}/teachers/${teacherProfileId}`)
+        .pipe(catchError(this.handleError));
+  }
+
+  updateTeacherProfileDetails(teacherProfileId: number, data: UpdateTeacherProfileRequest): Observable<TeacherListDTO> {
     return this.http.put<TeacherListDTO>(`${this.apiUrl}/teachers/${teacherProfileId}`, data)
       .pipe(catchError(this.handleError));
   }
