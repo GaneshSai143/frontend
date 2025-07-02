@@ -9,8 +9,13 @@ import { SuperAdminDataService } from '../../../core/services/super-admin-data.s
 import { School, CreateSchoolRequest, UpdateSchoolRequest } from '../../../core/models/school.model'; // Model imports
 import { User } from '../../../core/models/user.model';
 import { CreatePrincipalRequest } from '../../../core/models/principal.model';
-import { StudentProfile as StudentListDTO, UpdateStudentClassRequest } from '../../../core/models/student.model';
-import { TeacherProfile as TeacherListDTO } from '../../../core/models/teacher.model';
+import { StudentProfile as StudentListDTO, UpdateStudentClassRequest, CreateStudentRequest as CreateStudentProfileRequest } from '../../../core/models/student.model';
+import {
+    TeacherProfile as TeacherListDTO,
+    CreateTeacherByAdminRequest, // Added this import
+    CreateTeacherProfileRequest,
+    UpdateTeacherProfileRequest
+} from '../../../core/models/teacher.model';
 // SuperAdminDashboardStats is not used as its API endpoint doesn't exist
 // import { SuperAdminDashboardStats } from '../../../core/models/dashboard.model'; // Assuming it would be here
 import { SnackbarService } from '../../../core/services/snackbar.service';
