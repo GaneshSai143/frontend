@@ -26,7 +26,7 @@ export class SnackbarService {
     document.body.appendChild(container);
   }
 
-  show(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
+  show(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
     const container = document.getElementById(this.snackbarContainerId);
     if (!container) {
       console.error('Snackbar container not found!');
@@ -57,11 +57,12 @@ export class SnackbarService {
     }
   }
 
-  private getBootstrapColor(type: 'success' | 'error' | 'info'): string {
+  private getBootstrapColor(type: 'success' | 'error' | 'info' | 'warning'): string {
     switch (type) {
       case 'success': return 'success';
       case 'error': return 'danger'; // Bootstrap uses 'danger' for error
       case 'info': return 'info';
+      case 'warning': return 'warning';
       default: return 'secondary';
     }
   }
