@@ -258,6 +258,16 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     }
   }
 
+  getSchoolName(schoolId: number | string | null | undefined): string {
+    if (schoolId === null || schoolId === undefined) {
+      return 'N/A';
+    }
+    // Ensure schoolId is treated as a number for comparison if your school.id is a number
+    const idToCompare = typeof schoolId === 'string' ? parseInt(schoolId, 10) : schoolId;
+    const school = this.schools.find(s => s.id === idToCompare);
+    return school ? school.name : 'Unknown School';
+  }
+
 
   // --- Principal (Admin User) Management ---
   initPrincipalForm(principal?: User): void { // User type from core/models
@@ -363,6 +373,23 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
             error: (err: any) => this.snackbarService.show(`Error deleting principal: ${err.message || 'Unknown error'}`, 'error')
         });
     }
+  }
+
+  togglePrincipalStatus(principal: User): void {
+    if (!principal || principal.id === undefined) {
+      this.snackbarService.show('Cannot update status: Invalid principal data.', 'error');
+      return;
+    }
+    const newStatus = !principal.enabled;
+    // Assuming superAdminDataService.setUserStatus or a generic updateUser exists
+    // If setUserStatus is specific, ensure it can handle principals or use a generic one
+    this.superAdminDataService.setUserStatus(principal.id, newStatus).subscribe({
+      next: (updatedUser) => {
+        this.snackbarService.show(`Principal ${updatedUser.firstName} ${updatedUser.lastName} status updated to ${newStatus ? 'Enabled' : 'Disabled'}.`, 'success');
+        this.loadPrincipals(); // Refresh the list
+      },
+      error: (err: any) => this.snackbarService.show(`Error updating principal status: ${err.message || 'Unknown error'}`, 'error')
+    });
   }
 
   // --- Student Management ---
