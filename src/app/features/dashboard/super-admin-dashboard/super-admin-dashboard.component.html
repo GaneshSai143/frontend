@@ -123,17 +123,40 @@
           </li>
         </ul>
 
-        <!-- Tab Content -->
+        <!-- Tab Content Area -->
         <div class="tab-content" id="superAdminTabContent">
-          <!-- Overview Tab -->
-          <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+            <ng-container [ngSwitch]="activeTab">
+                <ng-container *ngSwitchCase="'overview'">
+                    <ng-container *ngTemplateOutlet="overviewTabContent"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'manage-schools'">
+                    <ng-container *ngTemplateOutlet="manageSchoolsTabContent"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'manage-principals'">
+                    <ng-container *ngTemplateOutlet="managePrincipalsTabContent"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'manage-teachers'">
+                    <ng-container *ngTemplateOutlet="manageTeachersTabContent"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'view-students'">
+                    <ng-container *ngTemplateOutlet="viewStudentsTabContent"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'reports-stats'">
+                    <ng-container *ngTemplateOutlet="reportsStatsTabContent"></ng-container>
+                </ng-container>
+            </ng-container>
+        </div>
+
+        <!-- Tab Content Templates -->
+        <ng-template #overviewTabContent>
+          <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab"> <!-- Bootstrap classes for styling -->
             <!-- Stats Cards -->
             <div class="row g-4 mb-4">
               <div class="col-md-3">
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Schools</h6>
-                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalSchools || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ reportTabTotalSchools || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -146,7 +169,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Principals</h6>
-                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ reportTabTotalPrincipals || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -158,7 +181,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Teachers</h6>
-                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalTeachers || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ reportTabTotalTeachers || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -170,7 +193,7 @@
                 <div class="card stat-card">
                   <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Total Students</h6>
-                    <h2 class="card-title mb-0">{{ dashboardOverviewStats?.totalStudents || 0 }}</h2>
+                    <h2 class="card-title mb-0">{{ reportTabTotalStudents || 0 }}</h2>
                     <div class="stat-trend up">
                       <i class="bi bi-arrow-up"></i>
                       <span>&nbsp;</span>
@@ -231,10 +254,11 @@
               </div>
             </div>
           </div>
+        </ng-template>
 
-          <!-- Manage Schools Tab -->
-          <div class="tab-pane fade" id="manage-schools" role="tabpanel" aria-labelledby="manage-schools-tab">
-            <div class="d-flex justify-content-between align-items-center mb-3 pt-3"> <!-- Added pt-3 for spacing -->
+        <ng-template #manageSchoolsTabContent>
+          <div class="tab-pane fade show active" id="manage-schools" role="tabpanel" aria-labelledby="manage-schools-tab"> <!-- Ensure show active for current tab -->
+            <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
               <h3><i class="bi bi-building me-2"></i>Manage Schools</h3>
               <button class="btn btn-primary" (click)="openSchoolModal(null)">
                 <i class="bi bi-plus-circle me-1"></i> Add New School
@@ -296,49 +320,451 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="principalId" class="form-label">Principal ID</label>
-                      <input type="text" id="principalId" formControlName="principalId" class="form-control"
-                             [ngClass]="{ 'is-invalid': schoolForm.get('principalId')?.invalid && schoolForm.get('principalId')?.touched }">
-                      <!-- TODO: Change to a select dropdown populated with actual principals -->
+                      <label for="principalId" class="form-label">Principal</label>
+                      <select id="principalId" formControlName="principalId" class="form-select"
+                              [ngClass]="{ 'is-invalid': schoolForm.get('principalId')?.invalid && schoolForm.get('principalId')?.touched }">
+                        <option [ngValue]="null" disabled>Select a Principal</option>
+                        <option *ngFor="let p of principals" [value]="p.id">
+                          {{ p.firstName }} {{ p.lastName }} ({{ p.username }})
+                        </option>
+                      </select>
                       <div *ngIf="schoolForm.get('principalId')?.invalid && schoolForm.get('principalId')?.touched" class="invalid-feedback">
-                        Principal ID is required.
+                        Principal assignment is required.
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="schoolAddress" class="form-label">Address</label>
-                      <textarea id="schoolAddress" formControlName="address" class="form-control"
-                                [ngClass]="{ 'is-invalid': schoolForm.get('address')?.invalid && schoolForm.get('address')?.touched }"></textarea>
-                      <div *ngIf="schoolForm.get('address')?.invalid && schoolForm.get('address')?.touched" class="invalid-feedback">
-                        Address is required.
+                      <label for="schoolAddress" class="form-label">Location / Address</label> <!-- Changed label to be more generic -->
+                      <textarea id="schoolAddress" formControlName="location" class="form-control" <!-- Changed formControlName to 'location' -->
+                                [ngClass]="{ 'is-invalid': schoolForm.get('location')?.invalid && schoolForm.get('location')?.touched }"></textarea>
+                      <div *ngIf="schoolForm.get('location')?.invalid && schoolForm.get('location')?.touched" class="invalid-feedback">
+                        Location/Address is required. <!-- Changed message -->
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-3">
-                        <label for="schoolEmail" class="form-label">Email</label>
+                        <label for="schoolEmail" class="form-label">School Contact Email</label> <!-- Clarified label -->
                         <input type="email" id="schoolEmail" formControlName="email" class="form-control"
                                [ngClass]="{ 'is-invalid': schoolForm.get('email')?.invalid && schoolForm.get('email')?.touched }">
                         <div *ngIf="schoolForm.get('email')?.errors?.['required'] && schoolForm.get('email')?.touched" class="invalid-feedback">
-                          Email is required.
+                          School contact email is required.
                         </div>
                         <div *ngIf="schoolForm.get('email')?.errors?.['email'] && schoolForm.get('email')?.touched" class="invalid-feedback">
                           Invalid email format.
                         </div>
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label for="schoolPhone" class="form-label">Phone</label>
+                        <label for="schoolPhone" class="form-label">School Contact Phone</label> <!-- Clarified label -->
                         <input type="tel" id="schoolPhone" formControlName="phone" class="form-control"
                                [ngClass]="{ 'is-invalid': schoolForm.get('phone')?.invalid && schoolForm.get('phone')?.touched }">
                         <div *ngIf="schoolForm.get('phone')?.invalid && schoolForm.get('phone')?.touched" class="invalid-feedback">
-                          Phone number is required.
+                          School contact phone number is required.
                         </div>
                       </div>
                     </div>
+                    <!-- establishedDate field is not part of CreateSchoolRequest/UpdateSchoolRequest DTOs and was commented out in component -->
+                    <!-- For consistency, it's removed from the form template as well, unless backend DTOs are updated -->
+                    <!--
                     <div class="mb-3">
                       <label for="establishedDate" class="form-label">Established Date</label>
                       <input type="date" id="establishedDate" formControlName="establishedDate" class="form-control"
                              [ngClass]="{ 'is-invalid': schoolForm.get('establishedDate')?.invalid && schoolForm.get('establishedDate')?.touched }">
                       <div *ngIf="schoolForm.get('establishedDate')?.invalid && schoolForm.get('establishedDate')?.touched" class="invalid-feedback">
                         Established date is required.
+                      </div>
+                    </div>
+                    -->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeSchoolModal()">Close</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="schoolForm.invalid">
+                      {{ editingSchool ? 'Save Changes' : 'Add School' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Manage Principals Tab -->
+          <div class="tab-pane fade" id="manage-principals" role="tabpanel" aria-labelledby="manage-principals-tab">
+            <div class="d-flex justify-content-between align-items-center mb-3 pt-3"> <!-- Ensured pt-3 -->
+              <h3><i class="bi bi-person-badge me-2"></i>Manage Principals</h3>
+              <button class="btn btn-primary" (click)="openPrincipalModal(null)">
+                <i class="bi bi-person-plus me-1"></i> Add New Principal
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>School ID</th> <!-- TODO: Map to School Name -->
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let principal of principals"> <!-- principal is User -->
+                    <td>{{ principal.username || 'N/A' }}</td>
+                    <td>{{ principal.firstName }} {{ principal.lastName }}</td>
+                    <td>{{ principal.email }}</td>
+                    <td>{{ principal.phoneNumber || 'N/A' }}</td>
+                    <td>{{ getSchoolName(principal.schoolId) }}</td> <!-- Use getSchoolName method -->
+                    <td>
+                      <span class="badge" [ngClass]="principal.enabled ? 'bg-success' : 'bg-secondary'">
+                        {{ principal.enabled ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-primary me-2" (click)="openPrincipalModal(principal)">
+                        <i class="bi bi-pencil-square"></i> Edit
+                      </button>
+                      <button class="btn btn-sm ms-2"
+                              [ngClass]="principal.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                              (click)="togglePrincipalStatus(principal)">
+                        <i class="bi" [ngClass]="principal.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
+                        {{ principal.enabled ? 'Disable' : 'Enable' }}
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger ms-2" (click)="confirmDeletePrincipal(principal)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!principals || principals.length === 0">
+                    <td colspan="7" class="text-center">No principals found. Use 'Add New Principal' to create one.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Manage Teachers Tab -->
+          <div class="tab-pane fade" id="manage-teachers" role="tabpanel" aria-labelledby="manage-teachers-tab">
+            <div class="d-flex justify-content-between align-items-center mb-3 pt-3"> <!-- Ensured pt-3 -->
+              <h3><i class="bi bi-person-video2 me-2"></i>Manage Teachers</h3>
+              <button class="btn btn-primary" (click)="openTeacherModal(null)"> <!-- null for new teacher -->
+                <i class="bi bi-person-plus"></i> Add New Teacher
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>School ID</th> <!-- If available on User and relevant -->
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let teacher of allTeachers"> <!-- teacher is now User -->
+                    <td>{{ teacher.username }}</td>
+                    <td>{{ teacher.firstName }} {{ teacher.lastName }}</td>
+                    <td>{{ teacher.email }}</td>
+                    <td>{{ teacher.phoneNumber || 'N/A' }}</td>
+                    <td>{{ getSchoolName(teacher.schoolId) }}</td> <!-- Use getSchoolName method -->
+                    <td>
+                      <span class="badge" [ngClass]="teacher.enabled ? 'bg-success' : 'bg-secondary'">
+                        {{ teacher.enabled ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                      <button class="btn btn-sm btn-outline-primary me-2" (click)="openTeacherModal(teacher)">
+                        <i class="bi bi-pencil-square"></i> Edit User
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" (click)="confirmDeleteTeacher(teacher)">
+                        <i class="bi bi-trash"></i> Delete User
+                      </button>
+                       <button class="btn btn-sm ms-2"
+                              [ngClass]="teacher.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                              (click)="toggleTeacherStatus(teacher)">
+                        <i class="bi" [ngClass]="teacher.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
+                        {{ teacher.enabled ? 'Disable' : 'Enable' }}
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!allTeachers || allTeachers.length === 0">
+                    <td colspan="6" class="text-center">No teachers found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Teacher Form Modal -->
+          <div class="modal fade" id="teacherFormModal" tabindex="-1" aria-labelledby="teacherFormModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <form [formGroup]="teacherForm" (ngSubmit)="submitTeacherForm()">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="teacherFormModalLabel">{{ editingTeacher ? 'Edit Teacher' : 'Add New Teacher' }}</h5>
+                    <button type="button" class="btn-close" (click)="closeTeacherModal()" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <!-- User fields -->
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="teacherUsername" class="form-label">Username</label>
+                        <input type="text" id="teacherUsername" formControlName="username" class="form-control" [readOnly]="editingTeacher"
+                               [ngClass]="{ 'is-invalid': teacherForm.get('username')?.invalid && teacherForm.get('username')?.touched }">
+                        <div *ngIf="teacherForm.get('username')?.invalid && teacherForm.get('username')?.touched" class="invalid-feedback">Username is required.</div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="teacherEmail" class="form-label">Email</label>
+                        <input type="email" id="teacherEmail" formControlName="email" class="form-control"
+                               [ngClass]="{ 'is-invalid': teacherForm.get('email')?.invalid && teacherForm.get('email')?.touched }">
+                        <div *ngIf="teacherForm.get('email')?.errors?.['required'] && teacherForm.get('email')?.touched" class="invalid-feedback">Email is required.</div>
+                        <div *ngIf="teacherForm.get('email')?.errors?.['email'] && teacherForm.get('email')?.touched" class="invalid-feedback">Invalid email format.</div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label for="teacherFirstName" class="form-label">First Name</label>
+                        <input type="text" id="teacherFirstName" formControlName="firstName" class="form-control"
+                               [ngClass]="{ 'is-invalid': teacherForm.get('firstName')?.invalid && teacherForm.get('firstName')?.touched }">
+                        <div *ngIf="teacherForm.get('firstName')?.invalid && teacherForm.get('firstName')?.touched" class="invalid-feedback">First name is required.</div>
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label for="teacherLastName" class="form-label">Last Name</label>
+                        <input type="text" id="teacherLastName" formControlName="lastName" class="form-control"
+                               [ngClass]="{ 'is-invalid': teacherForm.get('lastName')?.invalid && teacherForm.get('lastName')?.touched }">
+                        <div *ngIf="teacherForm.get('lastName')?.invalid && teacherForm.get('lastName')?.touched" class="invalid-feedback">Last name is required.</div>
+                      </div>
+                    </div>
+                     <div class="col-md-6 mb-3">
+                        <label for="teacherPhoneNumber" class="form-label">Phone Number</label>
+                        <input type="tel" id="teacherPhoneNumber" formControlName="phoneNumber" class="form-control">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="teacherEnabled" formControlName="enabled">
+                        <label class="form-check-label" for="teacherEnabled">Enabled</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="teacherSchoolId" class="form-label">Assign to School (Optional)</label>
+                        <select id="teacherSchoolId" formControlName="schoolId" class="form-select">
+                            <option [ngValue]="null">None</option>
+                            <option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</option>
+                        </select>
+                        <!-- No validation shown as it's optional -->
+                    </div>
+                    <!-- Subject Management Removed from this basic user form -->
+                    <p class="form-text mt-2 small" *ngIf="!editingTeacher">Note: Password is required for new teachers. For existing teachers, leave blank to keep current password.</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeTeacherModal()">Close</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="teacherForm.invalid">
+                      {{ editingTeacher ? 'Save Changes' : 'Add Teacher Profile' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Principal Form Modal (kept for future use but not functional without list/data) -->
+          <div class="modal fade" id="principalFormModal" tabindex="-1" aria-labelledby="principalFormModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <form [formGroup]="principalForm" (ngSubmit)="submitPrincipalForm()">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="principalFormModalLabel">{{ editingPrincipal ? 'Edit Principal' : 'Add New Principal' }}</h5>
+                    <button type="button" class="btn-close" (click)="closePrincipalModal()" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="principalUsername" class="form-label">Username</label>
+                            <input type="text" id="principalUsername" formControlName="username" class="form-control"
+                                   [ngClass]="{ 'is-invalid': principalForm.get('username')?.invalid && principalForm.get('username')?.touched }">
+                            <div *ngIf="principalForm.get('username')?.invalid && principalForm.get('username')?.touched" class="invalid-feedback">
+                              Username is required.
+                            </div>
+                        </div>
+                         <div class="col-md-6 mb-3">
+                            <label for="principalEmail" class="form-label">Email</label>
+                            <input type="email" id="principalEmail" formControlName="email" class="form-control"
+                                   [ngClass]="{ 'is-invalid': principalForm.get('email')?.invalid && principalForm.get('email')?.touched }">
+                            <div *ngIf="principalForm.get('email')?.errors?.['required'] && principalForm.get('email')?.touched" class="invalid-feedback">
+                              Email is required.
+                            </div>
+                            <div *ngIf="principalForm.get('email')?.errors?.['email'] && principalForm.get('email')?.touched" class="invalid-feedback">
+                              Invalid email format.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="principalFirstName" class="form-label">First Name</label>
+                            <input type="text" id="principalFirstName" formControlName="firstName" class="form-control"
+                                   [ngClass]="{ 'is-invalid': principalForm.get('firstName')?.invalid && principalForm.get('firstName')?.touched }">
+                            <div *ngIf="principalForm.get('firstName')?.invalid && principalForm.get('firstName')?.touched" class="invalid-feedback">
+                              First name is required.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="principalLastName" class="form-label">Last Name</label>
+                            <input type="text" id="principalLastName" formControlName="lastName" class="form-control"
+                                   [ngClass]="{ 'is-invalid': principalForm.get('lastName')?.invalid && principalForm.get('lastName')?.touched }">
+                            <div *ngIf="principalForm.get('lastName')?.invalid && principalForm.get('lastName')?.touched" class="invalid-feedback">
+                              Last name is required.
+                            </div>
+                        </div>
+                    </div>
+                     <div class="mb-3">
+                        <label for="principalSchoolId" class="form-label">Assign to School</label>
+                        <select id="principalSchoolId" formControlName="schoolId" class="form-select"
+                                [ngClass]="{ 'is-invalid': principalForm.get('schoolId')?.invalid && principalForm.get('schoolId')?.touched }">
+                            <option [ngValue]="null" disabled>Select a school</option>
+                            <option *ngFor="let school of schools" [value]="school.id">{{ school.name }}</option>
+                        </select>
+                        <div *ngIf="principalForm.get('schoolId')?.invalid && principalForm.get('schoolId')?.touched" class="invalid-feedback">
+                            School assignment is required.
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="principalIsActive" formControlName="isActive">
+                        <label class="form-check-label" for="principalIsActive">
+                            Active
+                        </label>
+                    </div>
+                    <!-- Note: Role is automatically set to 'ADMIN' in the component -->
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closePrincipalModal()">Close</button>
+                    <button type="submit" class="btn btn-primary" [disabled]="principalForm.invalid">
+                      {{ editingPrincipal ? 'Save Changes' : 'Add Principal' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- View Students Tab -->
+          <div class="tab-pane fade" id="view-students" role="tabpanel" aria-labelledby="view-students-tab">
+             <div class="d-flex justify-content-between align-items-center mb-3 pt-3"> <!-- Added pt-3 -->
+                <h3><i class="bi bi-people me-2"></i>View Students</h3>
+                 <div class="col-md-4">
+                    <select class="form-select" (change)="filterStudentsBySchool($event)" [(ngModel)]="selectedSchoolFilter">
+                        <option [ngValue]="null">All Schools</option>
+                        <option *ngFor="let school of allSchoolsForFilter.slice(1)" [value]="school.id">{{ school.name }}</option>
+                    </select>
+                 </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>School ID</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let student of students"> <!-- student is now User -->
+                    <td>{{ student.username || 'N/A' }}</td>
+                    <td>{{ student.firstName }} {{ student.lastName }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.phoneNumber || 'N/A' }}</td>
+                    <td>{{ getSchoolName(student.schoolId) }}</td> <!-- Used getSchoolName method -->
+                    <td>{{ student.grade || 'N/A' }}</td> <!-- 'grade' is not on User model, will likely show 'N/A' -->
+                    <td>
+                      <span class="badge" [ngClass]="student.enabled ? 'bg-success' : 'bg-secondary'">
+                        {{ student.enabled ? 'Active' : 'Inactive' }}
+                      </span>
+                    </td>
+                    <td>
+                       <button class="btn btn-sm ms-2"
+                              [ngClass]="student.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                              (click)="toggleStudentStatus(student)">
+                        <i class="bi" [ngClass]="student.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
+                        {{ student.enabled ? 'Disable' : 'Enable' }}
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger ms-2" (click)="confirmDeleteStudent(student)">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!students || students.length === 0">
+                    <td colspan="8" class="text-center">No students found.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Reports/Statistics Tab -->
+          <div class="tab-pane fade pt-3" id="reports-stats" role="tabpanel" aria-labelledby="reports-stats-tab"> <!-- Added pt-3 to tab-pane -->
+            <h3><i class="bi bi-graph-up me-2"></i>System Statistics</h3> <!-- Added icon and adjusted title -->
+            <div class="row mt-3 g-4">
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Schools</h5>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalSchools || 0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Principals</h5>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Teachers</h5>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalTeachers || 0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalStudents || 0 }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card text-center">
+                  <div class="card-body">
+                    <h5 class="card-title">Total Active Users</h5>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.activeUsers || 0 }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Placeholder for more detailed reports or charts -->
+            <div class="mt-4">
+              <h5>Detailed Reports (Placeholder)</h5>
+              <p>Charts and downloadable reports will be available here in a future update.</p>
+              <!-- Example: <canvas id="schoolDistributionChart"></canvas> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
                       </div>
                     </div>
                   </div>
