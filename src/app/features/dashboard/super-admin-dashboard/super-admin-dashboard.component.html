@@ -164,6 +164,7 @@
                     </div>
                   </div>
                 </div>
+              </div>
               <div class="col-md-3">
                 <div class="card stat-card">
                   <div class="card-body">
@@ -200,7 +201,7 @@
                   </div>
                 </div>
               </div>
-              </div>
+            </div>
 
             <!-- Recent Activity and Quick Actions -->
             <div class="row">
@@ -332,16 +333,17 @@
                       </div>
                     </div>
                     <div class="mb-3">
-                      <label for="schoolAddress" class="form-label">Location / Address</label> <!-- Changed label to be more generic -->
-                      <textarea id="schoolAddress" formControlName="location" class="form-control" <!-- Changed formControlName to 'location' -->
-                                [ngClass]="{ 'is-invalid': schoolForm.get('location')?.invalid && schoolForm.get('location')?.touched }"></textarea>
+                      <label for="schoolAddress" class="form-label">Location / Address</label>
+                      <textarea id="schoolAddress" formControlName="location" class="form-control"
+                                [ngClass]="{ 'is-invalid': schoolForm.get('location')?.invalid && schoolForm.get('location')?.touched }">
+                      </textarea>
                       <div *ngIf="schoolForm.get('location')?.invalid && schoolForm.get('location')?.touched" class="invalid-feedback">
-                        Location/Address is required. <!-- Changed message -->
+                        Location/Address is required.
                       </div>
                     </div>
                     <div class="row">
                       <div class="col-md-6 mb-3">
-                        <label for="schoolEmail" class="form-label">School Contact Email</label> <!-- Clarified label -->
+                        <label for="schoolEmail" class="form-label">School Contact Email</label>
                         <input type="email" id="schoolEmail" formControlName="email" class="form-control"
                                [ngClass]="{ 'is-invalid': schoolForm.get('email')?.invalid && schoolForm.get('email')?.touched }">
                         <div *ngIf="schoolForm.get('email')?.errors?.['required'] && schoolForm.get('email')?.touched" class="invalid-feedback">
@@ -352,7 +354,7 @@
                         </div>
                       </div>
                       <div class="col-md-6 mb-3">
-                        <label for="schoolPhone" class="form-label">School Contact Phone</label> <!-- Clarified label -->
+                        <label for="schoolPhone" class="form-label">School Contact Phone</label>
                         <input type="tel" id="schoolPhone" formControlName="phone" class="form-control"
                                [ngClass]="{ 'is-invalid': schoolForm.get('phone')?.invalid && schoolForm.get('phone')?.touched }">
                         <div *ngIf="schoolForm.get('phone')?.invalid && schoolForm.get('phone')?.touched" class="invalid-feedback">
@@ -360,23 +362,13 @@
                         </div>
                       </div>
                     </div>
-                    <!-- establishedDate field is not part of CreateSchoolRequest/UpdateSchoolRequest DTOs and was commented out in component -->
-                    <!-- For consistency, it's removed from the form template as well, unless backend DTOs are updated -->
-                    <!--
-                    <div class="mb-3">
-                      <label for="establishedDate" class="form-label">Established Date</label>
-                      <input type="date" id="establishedDate" formControlName="establishedDate" class="form-control"
-                             [ngClass]="{ 'is-invalid': schoolForm.get('establishedDate')?.invalid && schoolForm.get('establishedDate')?.touched }">
-                      <div *ngIf="schoolForm.get('establishedDate')?.invalid && schoolForm.get('establishedDate')?.touched" class="invalid-feedback">
-                        Established date is required.
-                      </div>
-                    </div>
-                    -->
+                    <!-- establishedDate field removed -->
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" (click)="closeSchoolModal()">Close</button>
                     <button type="submit" class="btn btn-primary" [disabled]="schoolForm.invalid">
-                      {{ editingSchool ? 'Save Changes' : 'Add School' }}
+                      <span *ngIf="editingSchool">Save Changes</span>
+                      <span *ngIf="!editingSchool">Add School</span>
                     </button>
                   </div>
                 </form>
@@ -1100,7 +1092,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Schools</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalSchools || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalSchools || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -1108,7 +1100,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Principals</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalPrincipals || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalPrincipals || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -1116,7 +1108,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Teachers</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalTeachers || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalTeachers || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -1124,7 +1116,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Students</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalStudents || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.totalStudents || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -1132,7 +1124,7 @@
                 <div class="card text-center">
                   <div class="card-body">
                     <h5 class="card-title">Total Active Users</h5>
-                    <p class="card-text fs-2">{{ reportTabTotalActiveUsers || 0 }}</p>
+                    <p class="card-text fs-2">{{ dashboardOverviewStats?.activeUsers || 0 }}</p>
                   </div>
                 </div>
               </div>
@@ -1146,6 +1138,6 @@
           </div>
         </div>
       </div>
-    <!-- </div> -->
+    </div>
   </main>
 </div>

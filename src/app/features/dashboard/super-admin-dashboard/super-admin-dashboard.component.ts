@@ -57,7 +57,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   reportTabTotalPrincipals = 0;
   reportTabTotalTeachers = 0; // Will be loaded via getTeachers()
   reportTabTotalStudents = 0;
-  reportTabTotalActiveUsers = 0; // This requires iterating all users, or a specific API endpoint
+  // reportTabTotalActiveUsers = 0; // This requires iterating all users, or a specific API endpoint
 
   allTeachers: User[] = []; // Changed from TeacherListDTO[]
   private teachersSubscription!: Subscription;
