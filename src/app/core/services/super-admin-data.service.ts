@@ -64,8 +64,9 @@ export class SuperAdminDataService {
       .pipe(catchError(this.handleError));
   }
 
-  getPrincipals(): Observable<User[]> {
-    return this.getUsersByRole('ADMIN');
+  getPrincipals(): Observable<User[]> { // User model should align with UserDTO
+    return this.http.get<User[]>(`${this.apiUrl}/admin/principals`) // Endpoint confirmed by user
+      .pipe(catchError(this.handleError));
   }
 
   createPrincipal(principalData: CreatePrincipalRequest): Observable<User> {
