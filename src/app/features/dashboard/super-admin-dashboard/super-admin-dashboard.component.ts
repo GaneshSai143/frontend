@@ -72,7 +72,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     { icon: 'bi-palette', type: 'warning', title: 'Theme Changed', description: 'Default theme was applied by an admin.', time: '2 days ago'}
   ];
 
-  activeTab: string = 'overview'; // Default to overview tab
+  activeTab: 'overview' | 'manage-schools' | 'manage-principals' | 'manage-teachers' | 'view-students' | 'reports-stats' = 'overview'; // Default to overview tab
   private tabInstances: { [key: string]: any } = {};
 
 
