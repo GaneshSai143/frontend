@@ -260,12 +260,9 @@
                     <td>{{ school.email || 'N/A' }}</td>
                     <td>{{ school.phone || 'N/A' }}</td>
                     <td class="action-buttons">
-                      <button class="btn btn-link text-primary p-1 me-2" (click)="openSchoolModal(school)" title="Edit School">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                      <button class="btn btn-link text-danger p-1" (click)="confirmDeleteSchool(school)" title="Delete School">
-                        <i class="bi bi-trash"></i>
-                      </button>
+
+                      <i class="bi bi-pencil-square text-primary p-1 me-2" (click)="openSchoolModal(school)" title="Edit School" style="cursor: pointer;"></i>
+                      <i class="bi bi-trash text-danger p-1" (click)="confirmDeleteSchool(school)" title="Delete School" style="cursor: pointer;"></i>
                     </td>
                   </tr>
                   <tr *ngIf="!schools || schools.length === 0">
@@ -311,18 +308,13 @@
                       </span>
                     </td>
                     <td class="action-buttons">
-                      <button class="btn btn-link text-primary p-1 me-2" (click)="openPrincipalModal(principal)" title="Edit Principal">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                      <button class="btn btn-link p-1 me-2"
-                              [ngClass]="principal.enabled ? 'text-warning' : 'text-success'"
-                              (click)="togglePrincipalStatus(principal)"
-                              [title]="principal.enabled ? 'Disable Principal' : 'Enable Principal'">
-                        <i class="bi" [ngClass]="principal.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
-                      </button>
-                      <button class="btn btn-link text-danger p-1" (click)="confirmDeletePrincipal(principal)" title="Delete Principal">
-                        <i class="bi bi-trash"></i>
-                      </button>
+                      <i class="bi bi-pencil-square text-primary p-1 me-2" (click)="openPrincipalModal(principal)" title="Edit Principal" style="cursor: pointer;"></i>
+                      <i class="bi p-1 me-2"
+                         [ngClass]="principal.enabled ? 'bi-person-dash text-warning' : 'bi-person-check text-success'"
+                         (click)="togglePrincipalStatus(principal)"
+                         [title]="principal.enabled ? 'Disable Principal' : 'Enable Principal'" style="cursor: pointer;"></i>
+                      <i class="bi bi-trash text-danger p-1" (click)="confirmDeletePrincipal(principal)" title="Delete Principal" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!principals || principals.length === 0">
@@ -367,18 +359,13 @@
                       </span>
                     </td>
                     <td class="action-buttons">
-                      <button class="btn btn-link text-primary p-1 me-2" (click)="openTeacherModal(teacher)" title="Edit Teacher">
-                        <i class="bi bi-pencil-square"></i>
-                      </button>
-                      <button class="btn btn-link text-danger p-1 me-2" (click)="confirmDeleteTeacher(teacher)" title="Delete Teacher">
-                        <i class="bi bi-trash"></i>
-                      </button>
-                       <button class="btn btn-link p-1"
-                              [ngClass]="teacher.enabled ? 'text-warning' : 'text-success'"
-                              (click)="toggleTeacherStatus(teacher)"
-                              [title]="teacher.enabled ? 'Disable Teacher' : 'Enable Teacher'">
-                        <i class="bi" [ngClass]="teacher.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
-                      </button>
+                      <i class="bi bi-pencil-square text-primary p-1 me-2" (click)="openTeacherModal(teacher)" title="Edit Teacher" style="cursor: pointer;"></i>
+                      <i class="bi bi-trash text-danger p-1 me-2" (click)="confirmDeleteTeacher(teacher)" title="Delete Teacher" style="cursor: pointer;"></i>
+                      <i class="bi p-1"
+                         [ngClass]="teacher.enabled ? 'bi-person-dash text-warning' : 'bi-person-check text-success'"
+                         (click)="toggleTeacherStatus(teacher)"
+                         [title]="teacher.enabled ? 'Disable Teacher' : 'Enable Teacher'" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!allTeachers || allTeachers.length === 0">
@@ -429,15 +416,13 @@
                       </span>
                     </td>
                     <td class="action-buttons">
-                       <button class="btn btn-link p-1 me-2"
-                              [ngClass]="student.enabled ? 'text-warning' : 'text-success'"
-                              (click)="toggleStudentStatus(student)"
-                              [title]="student.enabled ? 'Disable Student' : 'Enable Student'">
-                        <i class="bi" [ngClass]="student.enabled ? 'bi-person-dash' : 'bi-person-check'"></i>
-                      </button>
-                      <button class="btn btn-link text-danger p-1" (click)="confirmDeleteStudent(student)" title="Delete Student">
-                        <i class="bi bi-trash"></i>
-                      </button>
+
+                       <i class="bi p-1 me-2"
+                          [ngClass]="student.enabled ? 'bi-person-dash text-warning' : 'bi-person-check text-success'"
+                          (click)="toggleStudentStatus(student)"
+                          [title]="student.enabled ? 'Disable Student' : 'Enable Student'" style="cursor: pointer;"></i>
+                      <i class="bi bi-trash text-danger p-1" (click)="confirmDeleteStudent(student)" title="Delete Student" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!students || students.length === 0">
