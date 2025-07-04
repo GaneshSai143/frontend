@@ -260,6 +260,7 @@
                     <td>{{ school.email || 'N/A' }}</td>
                     <td>{{ school.phone || 'N/A' }}</td>
                     <td class="action-buttons">
+
                       <i class="bi bi-pencil-square text-primary p-1 me-2" (click)="openSchoolModal(school)" title="Edit School" style="cursor: pointer;"></i>
                       <i class="bi bi-trash text-danger p-1" (click)="confirmDeleteSchool(school)" title="Delete School" style="cursor: pointer;"></i>
                     </td>
@@ -313,6 +314,7 @@
                          (click)="togglePrincipalStatus(principal)"
                          [title]="principal.enabled ? 'Disable Principal' : 'Enable Principal'" style="cursor: pointer;"></i>
                       <i class="bi bi-trash text-danger p-1" (click)="confirmDeletePrincipal(principal)" title="Delete Principal" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!principals || principals.length === 0">
@@ -363,6 +365,7 @@
                          [ngClass]="teacher.enabled ? 'bi-person-dash text-warning' : 'bi-person-check text-success'"
                          (click)="toggleTeacherStatus(teacher)"
                          [title]="teacher.enabled ? 'Disable Teacher' : 'Enable Teacher'" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!allTeachers || allTeachers.length === 0">
@@ -413,11 +416,13 @@
                       </span>
                     </td>
                     <td class="action-buttons">
+
                        <i class="bi p-1 me-2"
                           [ngClass]="student.enabled ? 'bi-person-dash text-warning' : 'bi-person-check text-success'"
                           (click)="toggleStudentStatus(student)"
                           [title]="student.enabled ? 'Disable Student' : 'Enable Student'" style="cursor: pointer;"></i>
                       <i class="bi bi-trash text-danger p-1" (click)="confirmDeleteStudent(student)" title="Delete Student" style="cursor: pointer;"></i>
+
                     </td>
                   </tr>
                   <tr *ngIf="!students || students.length === 0">
@@ -708,7 +713,6 @@
         </div>
 
       </div> <!-- End of container-fluid -->
-    </div>
     </div> <!-- End of content-wrapper -->
   </main>
 </div>
