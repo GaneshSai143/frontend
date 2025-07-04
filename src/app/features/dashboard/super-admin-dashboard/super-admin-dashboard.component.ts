@@ -118,7 +118,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
       this.teacherModal = new bootstrap.Modal(teacherModalElement);
     }
     this.initTeacherForm(); // Init teacher form
--    // this.initializeTabs(); // No longer needed
+   // this.initializeTabs(); // No longer needed
   }
 
   // loadSuperAdminDashboardData(): void {
