@@ -101,30 +101,11 @@
     <!-- Dashboard Content -->
     <div class="content-wrapper">
       <div class="container-fluid">
-        <!-- Tab Navigation -->
-        <ul class="nav nav-tabs mb-3" id="superAdminTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">Overview</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="manage-schools-tab" data-bs-toggle="tab" data-bs-target="#manage-schools" type="button" role="tab" aria-controls="manage-schools" aria-selected="false">Manage Schools</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="manage-principals-tab" data-bs-toggle="tab" data-bs-target="#manage-principals" type="button" role="tab" aria-controls="manage-principals" aria-selected="false">Manage Principals</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="manage-teachers-tab" data-bs-toggle="tab" data-bs-target="#manage-teachers" type="button" role="tab" aria-controls="manage-teachers" aria-selected="false">Manage Teachers</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="view-students-tab" data-bs-toggle="tab" data-bs-target="#view-students" type="button" role="tab" aria-controls="view-students" aria-selected="false">View Students</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="reports-stats-tab" data-bs-toggle="tab" data-bs-target="#reports-stats" type="button" role="tab" aria-controls="reports-stats" aria-selected="false">Reports/Statistics</button>
-          </li>
-        </ul>
+        <!-- Tab Navigation Removed -->
 
         <!-- Tab Content Area -->
-        <div class="tab-content p-3" id="superAdminTabContent">
+        <!-- Ensure p-3 or similar padding is maintained if needed, or add pt-3 to content sections if mb-3 from nav-tabs was important -->
+        <div class="tab-content pt-3" id="superAdminTabContent">
 
           <!-- Overview Tab Content -->
           <div *ngIf="isOverviewActive" class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
@@ -728,6 +709,7 @@
         </div>
 
       </div> <!-- End of container-fluid -->
+    </div>
     </div> <!-- End of content-wrapper -->
   </main>
 </div>
