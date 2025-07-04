@@ -626,4 +626,12 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     // Optionally, clear the theme or set to default on logout from dashboard itself
     // this.themeService.clearTheme();
   }
+
+  // Getter methods for active tab checks to help with strict template type checking
+  get isOverviewActive(): boolean { return this.activeTab === 'overview'; }
+  get isManageSchoolsActive(): boolean { return this.activeTab === 'manage-schools'; }
+  get isManagePrincipalsActive(): boolean { return this.activeTab === 'manage-principals'; }
+  get isManageTeachersActive(): boolean { return this.activeTab === 'manage-teachers'; }
+  get isViewStudentsActive(): boolean { return this.activeTab === 'view-students'; }
+  get isReportsStatsActive(): boolean { return this.activeTab === 'reports-stats'; }
 }

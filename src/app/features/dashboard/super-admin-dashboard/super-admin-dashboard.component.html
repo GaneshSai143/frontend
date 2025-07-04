@@ -127,7 +127,7 @@
         <div class="tab-content p-3" id="superAdminTabContent">
 
           <!-- Overview Tab Content -->
-          <div *ngIf="activeTab === 'overview'" class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+          <div *ngIf="isOverviewActive" class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
             <!-- Stats Cards -->
             <div class="row g-4 mb-4">
               <div class="col-md-3">
@@ -232,7 +232,7 @@
           </div>
 
           <!-- Manage Schools Tab Content -->
-          <div *ngIf="activeTab === 'manage-schools'" class="tab-pane fade show active" id="manage-schools" role="tabpanel" aria-labelledby="manage-schools-tab">
+          <div *ngIf="isManageSchoolsActive" class="tab-pane fade show active" id="manage-schools" role="tabpanel" aria-labelledby="manage-schools-tab">
             <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
               <h3><i class="bi bi-building me-2"></i>Manage Schools</h3>
               <button class="btn btn-primary" (click)="openSchoolModal(null)" title="Add New School">
@@ -274,7 +274,7 @@
           </div>
 
           <!-- Manage Principals Tab Content -->
-          <div *ngIf="activeTab === 'manage-principals'" class="tab-pane fade show active" id="manage-principals" role="tabpanel" aria-labelledby="manage-principals-tab">
+          <div *ngIf="isManagePrincipalsActive" class="tab-pane fade show active" id="manage-principals" role="tabpanel" aria-labelledby="manage-principals-tab">
             <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
               <h3><i class="bi bi-person-badge me-2"></i>Manage Principals</h3>
               <button class="btn btn-primary" (click)="openPrincipalModal(null)" title="Add New Principal">
@@ -326,7 +326,7 @@
           </div>
 
           <!-- Manage Teachers Tab Content -->
-          <div *ngIf="activeTab === 'manage-teachers'" class="tab-pane fade show active" id="manage-teachers" role="tabpanel" aria-labelledby="manage-teachers-tab">
+          <div *ngIf="isManageTeachersActive" class="tab-pane fade show active" id="manage-teachers" role="tabpanel" aria-labelledby="manage-teachers-tab">
             <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
               <h3><i class="bi bi-person-video2 me-2"></i>Manage Teachers</h3>
               <button class="btn btn-primary" (click)="openTeacherModal(null)" title="Add New Teacher">
@@ -377,7 +377,7 @@
           </div>
 
           <!-- View Students Tab Content -->
-          <div *ngIf="activeTab === 'view-students'" class="tab-pane fade show active" id="view-students" role="tabpanel" aria-labelledby="view-students-tab">
+          <div *ngIf="isViewStudentsActive" class="tab-pane fade show active" id="view-students" role="tabpanel" aria-labelledby="view-students-tab">
              <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
                 <h3><i class="bi bi-people me-2"></i>View Students</h3>
                  <div class="col-md-4">
@@ -434,7 +434,7 @@
           </div>
 
           <!-- Reports/Statistics Tab Content -->
-          <div *ngIf="activeTab === 'reports-stats'" class="tab-pane fade show active pt-3" id="reports-stats" role="tabpanel" aria-labelledby="reports-stats-tab">
+          <div *ngIf="isReportsStatsActive" class="tab-pane fade show active pt-3" id="reports-stats" role="tabpanel" aria-labelledby="reports-stats-tab">
             <h3><i class="bi bi-graph-up me-2"></i>System Statistics</h3>
             <div class="row mt-3 g-4">
               <div class="col-md-4">
