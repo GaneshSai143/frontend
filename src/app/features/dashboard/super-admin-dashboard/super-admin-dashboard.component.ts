@@ -22,6 +22,9 @@ import { SnackbarService } from '../../../core/services/snackbar.service';
 
 declare var bootstrap: any; // For Bootstrap Modals
 
+// Define a type alias for the tab names
+export type SuperAdminTabName = 'overview' | 'manage-schools' | 'manage-principals' | 'manage-teachers' | 'view-students' | 'reports-stats';
+
 @Component({
   selector: 'app-super-admin-dashboard',
   templateUrl: './super-admin-dashboard.component.html',
@@ -72,7 +75,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     { icon: 'bi-palette', type: 'warning', title: 'Theme Changed', description: 'Default theme was applied by an admin.', time: '2 days ago'}
   ];
 
-  activeTab: string = 'overview'; // Default to overview tab
+  activeTab: SuperAdminTabName = 'overview'; // Default to overview tab
   private tabInstances: { [key: string]: any } = {};
 
 
@@ -161,7 +164,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
     }
   }
 
-  setActiveTab(tabId: string): void {
+  setActiveTab(tabId: SuperAdminTabName): void {
     this.activeTab = tabId;
     if (this.tabInstances[tabId]) {
       this.tabInstances[tabId].show();
