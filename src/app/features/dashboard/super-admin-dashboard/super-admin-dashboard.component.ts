@@ -76,7 +76,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   ];
 
   activeTab: SuperAdminTabName = 'overview'; // Default to overview tab
-  private tabInstances: { [key: string]: any } = {};
+  // private tabInstances: { [key: string]: any } = {}; // No longer needed
 
 
   constructor(
@@ -118,7 +118,7 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
       this.teacherModal = new bootstrap.Modal(teacherModalElement);
     }
     this.initTeacherForm(); // Init teacher form
-    this.initializeTabs();
+-    // this.initializeTabs(); // No longer needed
   }
 
   // loadSuperAdminDashboardData(): void {
@@ -150,25 +150,26 @@ export class SuperAdminDashboardComponent extends BaseDashboardComponent impleme
   //   });
   // }
 
-  initializeTabs(): void {
-    ['overview', 'manage-schools', 'manage-principals', 'manage-teachers', 'view-students', 'reports-stats'].forEach(tabId => {
-      const tabElement = document.getElementById(`${tabId}-tab`);
-      if (tabElement) {
-        this.tabInstances[tabId] = new bootstrap.Tab(tabElement);
-      }
-    });
-    // Ensure the default activeTab is shown
-    if (this.tabInstances[this.activeTab]) {
-       // Timeout to ensure elements are fully rendered before trying to show tab
-      setTimeout(() => this.tabInstances[this.activeTab]?.show(), 0);
-    }
-  }
+  // initializeTabs(): void { // Method no longer needed as top tabs are removed
+  //   ['overview', 'manage-schools', 'manage-principals', 'manage-teachers', 'view-students', 'reports-stats'].forEach(tabId => {
+  //     const tabElement = document.getElementById(`${tabId}-tab`);
+  //     if (tabElement) {
+  //       this.tabInstances[tabId] = new bootstrap.Tab(tabElement);
+  //     }
+  //   });
+  //   // Ensure the default activeTab is shown
+  //   if (this.tabInstances[this.activeTab]) {
+  //      // Timeout to ensure elements are fully rendered before trying to show tab
+  //     setTimeout(() => this.tabInstances[this.activeTab]?.show(), 0);
+  //   }
+  // }
 
   setActiveTab(tabId: SuperAdminTabName): void {
     this.activeTab = tabId;
-    if (this.tabInstances[tabId]) {
-      this.tabInstances[tabId].show();
-    }
+    // The following lines related to Bootstrap tab instances are no longer needed
+    // if (this.tabInstances[tabId]) {
+    //   this.tabInstances[tabId].show();
+    // }
     if (this.isMobileView) { // Close mobile sidebar on tab navigation
         this.closeMobileSidebar();
     }
